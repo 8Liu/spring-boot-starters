@@ -9,10 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.PropertyAccessor;
 import org.springframework.beans.PropertyAccessorFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 @Slf4j
@@ -47,6 +44,14 @@ public class GRpcMessageConverter {
     protected static void setField(PropertyAccessor propertyAccessor, String name, Object value) {
         try {
             log.trace("Set Object field: {}, value: {}", name, value);
+            if (null != propertyAccessor && null != value
+                    && Date.class.equals(propertyAccessor.getPropertyType(name))) {
+                if (value instanceof Long) {
+                    value = new Date((Long) value);
+                } else if (!(value instanceof Date)) {
+                    value = null;
+                }
+            }
             propertyAccessor.setPropertyValue(name, value);
         } catch (Exception e) {
             log.trace("Set object field exception: {}", e);
@@ -55,6 +60,7 @@ public class GRpcMessageConverter {
 
     /**
      * Set gRpc field
+     *
      * @param builder
      * @param field
      * @param value
@@ -63,7 +69,9 @@ public class GRpcMessageConverter {
         try {
             log.trace("Set gRpc field: {}, value: {}", field.getName(), value);
             if ("char[]".equals(value.getClass().getTypeName())) {
-                value = new String((char[])value);
+                value = new String((char[]) value);
+            } else if (value instanceof Date) {
+                value = ((Date) value).getTime();
             }
             builder.setField(field, value);
         } catch (Exception e) {
@@ -194,10 +202,10 @@ public class GRpcMessageConverter {
                 if (null == value) {
                     continue;
                 }
-                Boolean isArray = value.getClass().getName().equals("java.util.ArrayList");
+
                 if (Descriptors.FieldDescriptor.Type.MESSAGE == field.getType()) {
                     Builder fieldBuilder = (Builder) getFieldBuilder(builder, field);
-                    if (isArray) {
+                    if (value instanceof List) {
                         toGRpcMessages((List<?>) value, builder, field);
                     } else if (null != fieldBuilder) {
                         Object nestedValue = toGRpcMessage(value, fieldBuilder);
