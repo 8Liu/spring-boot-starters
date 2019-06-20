@@ -3,8 +3,11 @@ spring:
     host: ${app.redis.host}
     port: ${app.redis.port:6379}
     password: ${app.redis.password}
+    # 缓存过期时间(单位:秒)
+    default-expiration: ${app.redis.default-expiration:1800}
     jedis:
       pool:
         max-active: 8
         max-idle: 8
         min-idle: 0
+    database: ${app.redis.database:0}
