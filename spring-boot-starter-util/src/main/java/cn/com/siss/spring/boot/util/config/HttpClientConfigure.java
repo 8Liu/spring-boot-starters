@@ -27,11 +27,11 @@ public class HttpClientConfigure {
 
     public static CloseableHttpClient closeableHttpClient;
 
-    private static final Integer ConnectionTimeout = 60000;
+    private static final Integer ConnectionTimeout = 10000;
 
     private static final Integer ConnectionRequestTimeout = 10000;
 
-    private static final Integer SocketTimeout = 60000;
+    private static final Integer SocketTimeout = 10000;
 
     private static final Integer MaxIdleTime = 30;
 
