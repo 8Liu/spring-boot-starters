@@ -5,33 +5,28 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * @ClassName DruidMonitorProperties
- * @Description TODO
- * @Author clare
- * @Date 2019/2/20 18:24
- * @Version 1.0
+ * Druid监控配置属性
+ *
+ * @Description:
+ * @Author: HJ
+ * @CreateDate: 2019/6/28
+ * @UpdateUser: HJ
+ * @UpdateDate: 2019/6/28
+ * @UpdateRemark:
+ * @Version: 1.0
  */
-@ConfigurationProperties(prefix = "spring.datasource.druid.stat-view-servlet")
-@Component
 @Data
+@Component
+@ConfigurationProperties(prefix = "druid.wiki")
 public class DruidMonitorProperties {
     /**
-     * 白名单
+     * WebStatFilter配置，说明请参考Druid Wiki，配置_配置WebStatFilter
      */
-    private String allow;
-    /**
-     * IP黑名单(存在共同时，deny优先于allow)
-     */
-    private String deny;
-    /**
-     * 登录查看信息的账号
-     */
-    private String loginUsername;
+    private DruidMonitorWebStatFilter webStatFilter;
 
     /**
-     * 登录查看信息的密码
+     * StatViewServlet配置，说明请参考Druid Wiki，配置_StatViewServlet配置
      */
-    private String loginPassword;
-
+    private DruidMonitorStatViewServlet statViewServlet;
 
 }

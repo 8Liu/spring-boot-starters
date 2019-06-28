@@ -1,60 +1,62 @@
-# application properties
-#app:
-#  datasource:
-#    name: [app-name]
-#    host: mysql-dev
-#    port: 3306
-#    username: kfman
-#    password: [password hash]
-#    druid:
-#      public-key:
-
 spring:
   # 数据库配置
   datasource:
     name: ${app.datasource.name}
-    url: jdbc:mysql://${app.datasource.host:mysql-${spring.profiles.active}}:${app.datasource.port:3306}/${app.datasource.name}?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
+    type: com.alibaba.druid.pool.DruidDataSource
+
+    url: jdbc:mysql://${app.datasource.host:mysql-${spring.profiles.active}}:${app.datasource.port:3306}/${app.datasource.name}?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
     username: ${app.datasource.username}
     password: ${app.datasource.password}
-    type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.jdbc.Driver
-    druid:
-      max-active: 20
-      initial-size: 1
-      max-wait: 60000
-      min-idle: 1
-      time-between-eviction-runs-millis: 60000
-      min-evictable-idle-time-millis: 300000
-      validation-query: SELECT 'x' FROM DUAL
-      test-while-idle: true
-      test-on-borrow: false
-      test-on-return: false
-      pool-prepared-statements: false
-      max-open-prepared-statements: 20
-      #检测连接池泄露
-      remove-abandoned: true
-      remove-abandoned-timeout: 1800
-      log-abandoned: true
-      # encrypt password
-      connection-properties: "config.decrypt=true;config.decrypt.key=${app.datasource.druid.public-key};druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000"
-      use-global-data-source-stat: true
-      # WebStatFilter配置，说明请参考Druid Wiki，配置_配置WebStatFilter
-      web-stat-filter:
-        enabled: true #是否启用StatFilter默认值true
-        url-pattern: "/*"
-        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid2/*"
-        session-stat-enable:
-        session-stat-max-count:
-        principal-session-name:
-        principal-cookie-name:
-        profile-enable:
+    maxActive: 20
+    initialSize: 1
+    maxWait: 60000
+    minIdle: 1
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 'x' FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    # 检测连接池泄露
+    removeAbandoned: true
+    removeAbandonedimeout: 1800
+    logAbandoned: true
+    # encrypt password
+    filters: config,stat,wall,log4j
+    connectionProperties: "config.decrypt=true;config.decrypt.key=${app.datasource.druid.public-key};druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000"
+    poolPreparedStatements: false
+    maxOpenPreparedStatements: 20
+    useGlobalDataSourceStat: true
 
-      # StatViewServlet配置，说明请参考Druid Wiki，配置_StatViewServlet配置
-      stat-view-servlet:
-        enabled: true #是否启用StatViewServlet默认值true
-        url-pattern: "/druid/*"
-        reset-enable: false
-        login-username: admin
-        login-password: admin321
-        allow: ""
-        deny: ""
+  # 主数据源名称; 无数据源名称则不需要配置, 如果配置了dynamicDataBase则必须配置, 名称必须为dynamicDataBase的数据源名的其中一个
+  # mainDatabase: master
+  # 多数据源的数据源名称与独自的配置信息
+  # dynamicDataBase:
+    # master:
+      # url: jdbc:mysql://${app.datasource.host}/${app.datasource.name}?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+    # slave:
+      # url: jdbc:mysql://${app.datasource.host}/${app.datasource.name}_1?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+
+# druid monitor 配置
+druid:
+  wiki:
+    # WebStatFilter配置，说明请参考Druid Wiki，配置_配置WebStatFilter
+    webStatFilter:
+      enabled: true #是否启用StatFilter默认值true
+      urlPattern: "/*"
+      exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid2/*"
+      sessionStatEnable:
+      sessionStatMaxCount:
+      principalSessionName:
+      principalCookieName:
+      profileEnable:
+    # StatViewServlet配置，说明请参考Druid Wiki，配置_StatViewServlet配置
+    statViewServlet:
+      enabled: true #是否启用StatViewServlet默认值true
+      urlPattern: "/druid/*"
+      resetEnable: false
+      loginUsername: siss
+      loginPassword: siss.pub
+      allow: ""
+      deny: ""

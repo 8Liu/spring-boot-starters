@@ -9,13 +9,11 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,7 +22,6 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Component
 @Slf4j
@@ -35,11 +32,12 @@ public class CloseableHttpClientUtil {
 
     private static CloseableHttpClient client;
 
-    private CloseableHttpClientUtil(){}
+    private CloseableHttpClientUtil() {
+    }
 
     @PostConstruct
-    private void init(){
-        client=closeableHttpClient;
+    private void init() {
+        client = closeableHttpClient;
     }
 
     /*public static <T> BaseResponse<T> get(String url,String token,Object param,Class<T> clz) throws Exception {
@@ -58,48 +56,48 @@ public class CloseableHttpClientUtil {
         return null;
     }*/
 
-    public static <T> BaseResponse<List<T>> postForList(String url, String token, Object param, Class<T> clz){
-        HttpEntity httpEntity=null;
-        CloseableHttpResponse response =null;
-        try{
-            HttpPost post=new HttpPost(url);
+    public static <T> BaseResponse<List<T>> postForList(String url, String token, Object param, Class<T> clz) {
+        HttpEntity httpEntity = null;
+        CloseableHttpResponse response = null;
+        try {
+            HttpPost post = new HttpPost(url);
             post.addHeader("Authorization", token);
-            post.addHeader("Content-Type","application/json");
-            StringEntity requestEntity = new StringEntity(JSON.toJSONString(param),"utf-8");
+            post.addHeader("Content-Type", "application/json");
+            StringEntity requestEntity = new StringEntity(JSON.toJSONString(param), "utf-8");
             requestEntity.setContentEncoding("UTF-8");
             post.setEntity(requestEntity);
-            response=client.execute(post);
-            httpEntity=response.getEntity();
+            response = client.execute(post);
+            httpEntity = response.getEntity();
             String res = EntityUtils.toString(httpEntity);
-            BaseResponse baseResponse=JSON.parseObject(res, BaseResponse.class);
-            Object data=baseResponse.getData();
-            if (!baseResponse.getCode().equals(ReturnCodeEnum.MESSAGE_COMMON_SUCCESS.getCode())){
+            BaseResponse baseResponse = JSON.parseObject(res, BaseResponse.class);
+            Object data = baseResponse.getData();
+            if (!baseResponse.getCode().equals(ReturnCodeEnum.MESSAGE_COMMON_SUCCESS.getCode())) {
                 return baseResponse;
             }
-            List<T> list=new ArrayList<>();
-            JSONArray array=(JSONArray)data;
-            for (int i=0;i<array.size();i++){
+            List<T> list = new ArrayList<>();
+            JSONArray array = (JSONArray) data;
+            for (int i = 0; i < array.size(); i++) {
                 //T t1=clz.newInstance();
                 //BeanUtils.copyProperties(array.get(i),t1);
-                T t1=BeanUtil.mapToBean((JSONObject)array.get(i),clz);
+                T t1 = BeanUtil.mapToBean((JSONObject) array.get(i), clz);
                 list.add(t1);
             }
             baseResponse.setData(list);
             return baseResponse;
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
             return BackResponseUtil.setBaseResponse(ReturnCodeEnum.MESSAGE_COMMON_FAILED.getCode());
-        }finally {
+        } finally {
             try {
                 EntityUtils.consume(httpEntity);
             } catch (IOException e) {
-                log.error(e.getMessage(),e);
+                log.error(e.getMessage(), e);
             }
         }
 
     }
 
-    public static BaseResponse httpGet(String url){
+    public static BaseResponse httpGet(String url) {
         HttpGet httpGet = new HttpGet(url);
         CloseableHttpResponse response = null;
         try {
@@ -109,17 +107,17 @@ public class CloseableHttpClientUtil {
                 return null;
             } else {
                 String result = EntityUtils.toString(response.getEntity(), "UTF-8");
-                BaseResponse baseResponse=JSON.parseObject(result, BaseResponse.class);
+                BaseResponse baseResponse = JSON.parseObject(result, BaseResponse.class);
                 return baseResponse;
             }
         } catch (Exception e) {
-            log.error("get请求失败"+url,e);
+            log.error("get请求失败" + url, e);
         } finally {
-            if (response != null){
+            if (response != null) {
                 try {
                     response.close();
                 } catch (IOException e) {
-                    log.error("get请求失败"+url,e);
+                    log.error("get请求失败" + url, e);
                 }
             }
         }

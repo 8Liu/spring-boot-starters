@@ -6,13 +6,13 @@
 
     <groupId>cn.com.siss</groupId>
     <artifactId>spring-boot-starters</artifactId>
-    <version>0.0.6-SNAPSHOT</version>
+    <version>0.0.7-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.4.RELEASE</version>
+        <version>1.5.6.RELEASE</version>
     </parent>
 
     <modules>
@@ -25,11 +25,9 @@
         <module>spring-boot-starter-core</module>
         <module>spring-boot-starter-util</module>
         <module>spring-boot-starter-kafka</module>
-        <module>spring-boot-starter-mybatis-plus</module>
         <module>spring-boot-starter-mongo</module>
         <module>spring-boot-starter-amqp</module>
     </modules>
-
 
 
     <properties>
@@ -37,7 +35,7 @@
         <java.version>1.8</java.version>
 
         <!-- module version -->
-        <starters.version>0.0.6-SNAPSHOT</starters.version>
+        <starters.version>0.0.7-SNAPSHOT</starters.version>
 
         <!--maven-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -57,9 +55,8 @@
         <project.groupName>demo</project.groupName>
 
         <!--testing-->
-        <junit.version>4.12</junit.version>
-        <powermock.version>1.6.6</powermock.version>
         <testng.version>6.10</testng.version>
+        <powermock.version>1.6.6</powermock.version>
         <rest-assured.version>3.0.1</rest-assured.version>
         <skip.unit-tests>false</skip.unit-tests>
         <skip.integration-tests>true</skip.integration-tests>
@@ -68,13 +65,14 @@
         <gatling-plugin.version>3.0.0-SNAPSHOT</gatling-plugin.version>
 
         <!--database-->
-        <druid.version>1.0.26</druid.version>
-        <mybatis.hazelcast.version>1.1.1</mybatis.hazelcast.version>
-        <mybatis.spring.version>1.3.0</mybatis.spring.version>
-        <org.mybatis.starter.version>1.1.1</org.mybatis.starter.version>
         <mysql.connector.version>5.1.40</mysql.connector.version>
+        <druid.starter.version>1.1.6</druid.starter.version>
+        <mybatis.starter.version>1.3.4</mybatis.starter.version>
+        <pagehelper.starter.version>1.1.3</pagehelper.starter.version>
+        <mybatis.hazelcast.version>1.3.4</mybatis.hazelcast.version>
         <pagehelper.version>4.1.6</pagehelper.version>
         <mybatis-plus.version>2.0.5</mybatis-plus.version>
+
         <!--logging-->
         <slf4j.version>1.7.21</slf4j.version>
         <lombok.version>1.16.12</lombok.version>
@@ -87,7 +85,6 @@
 
         <!--cache-->
         <hazelcast.version>3.8.3</hazelcast.version>
-        <mybatis.hazelcast.version>1.1.1</mybatis.hazelcast.version>
         <hazelcast-kubernetes-version>1.1.1-SNAPSHOT</hazelcast-kubernetes-version>
         <!--spring-->
         <spring.version>4.3.11.RELEASE</spring.version>
@@ -114,7 +111,6 @@
         <axon.version>3.1.2</axon.version>
         <jackson-datatype.version>2.9.0</jackson-datatype.version>
         <jgroups-kubernetes.version>1.0.4-SNAPSHOT</jgroups-kubernetes.version>
-        <quartz.version>2.2.1</quartz.version>
         <jsr310.version>2.6.5</jsr310.version>
         <java.version>1.8</java.version>
         <grpc.version>1.9.0</grpc.version>
@@ -128,9 +124,6 @@
         <grpc.version>1.9.0</grpc.version>
         <!--quartz-->
         <quartz.version>2.2.1</quartz.version>
-
-        <!-- druid -->
-        <druid-spring-boot-starter.version>1.1.3</druid-spring-boot-starter.version>
 
         <!--mongodb-->
         <mongodb-starter.version>1.5.9.RELEASE</mongodb-starter.version>
@@ -167,6 +160,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+        <!--testing-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <!--lombok-->
         <dependency>
@@ -175,22 +174,10 @@
             <version>${lombok.version}</version>
         </dependency>
 
-        <!--testing-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>${testng.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-core</artifactId>
-            <version>${hamcrest.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -235,7 +222,6 @@
     </profiles>
 
 
-
     <dependencyManagement>
         <dependencies>
             <!--spring-->
@@ -250,37 +236,61 @@
                 <version>${spring.version}</version>
             </dependency>
 
+            <!-- MySql数据库驱动 -->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.connector.version}</version>
+            </dependency>
+            <!-- springboot的druid数据源 -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid.starter.version}</version>
+            </dependency>
+            <!-- springboot的mybatis -->
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis.starter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
             <!-- grpc -->
             <dependency>
                 <groupId>io.grpc</groupId>
                 <artifactId>grpc-all</artifactId>
                 <version>${grpc.version}</version>
             </dependency>
-            <!-- mybatis -->
+            <!-- https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java -->
             <dependency>
-                <groupId>org.mybatis.spring.boot</groupId>
-                <artifactId>mybatis-spring-boot-starter</artifactId>
-                <version>${org.mybatis.starter.version}</version>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>3.5.1</version>
             </dependency>
+
+            <!-- kafka -->
             <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>${mysql.connector.version}</version>
+                <groupId>org.springframework.kafka</groupId>
+                <artifactId>spring-kafka</artifactId>
+                <version>${org.springframework.kafka.version}</version>
             </dependency>
+
+            <!--lombok-->
             <dependency>
-                <groupId>org.mybatis</groupId>
-                <artifactId>mybatis-spring</artifactId>
-                <version>${mybatis.spring.version}</version>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.github.pagehelper</groupId>
                 <artifactId>pagehelper</artifactId>
                 <version>${pagehelper.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>druid</artifactId>
-                <version>${druid.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
@@ -292,12 +302,6 @@
                 <artifactId>easyexcel</artifactId>
                 <version>1.0.4</version>
             </dependency>
-            <!--lombok-->
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -306,87 +310,11 @@
                 <scope>provided</scope>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java -->
-            <dependency>
-                <groupId>com.google.protobuf</groupId>
-                <artifactId>protobuf-java</artifactId>
-                <version>3.5.1</version>
-            </dependency>
-            <!-- kafka -->
-            <dependency>
-                <groupId>org.springframework.kafka</groupId>
-                <artifactId>spring-kafka</artifactId>
-                <version>${org.springframework.kafka.version}</version>
-            </dependency>
             <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
                 <version>${com.fasterxml.jackson.core}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>cn.com.siss</groupId>
-                <artifactId>spring-boot-starter-mybatis-plus</artifactId>
-                <version>${starters.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.com.siss</groupId>
-                <artifactId>spring-boot-starter-core</artifactId>
-                <version>${starters.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.com.siss</groupId>
-                <artifactId>spring-boot-starter-mybatis</artifactId>
-                <version>${starters.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.com.siss</groupId>
-                <artifactId>spring-boot-starter-grpc</artifactId>
-                <version>${starters.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.com.siss</groupId>
-                <artifactId>spring-boot-starter-kafka</artifactId>
-                <version>${starters.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.com.siss</groupId>
-                <artifactId>spring-boot-starter-logging</artifactId>
-                <version>${starters.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.com.siss</groupId>
-                <artifactId>spring-boot-starter-redis</artifactId>
-                <version>${starters.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.com.siss</groupId>
-                <artifactId>spring-boot-starter-util</artifactId>
-                <version>${starters.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.com.siss</groupId>
-                <artifactId>spring-boot-starter-validate</artifactId>
-                <version>${starters.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>cn.com.siss</groupId>
-                <artifactId>spring-boot-starter-mongo</artifactId>
-                <version>${starters.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>cn.com.siss</groupId>
-                <artifactId>spring-boot-starter-amqp</artifactId>
-                <version>${starters.version}</version>
-            </dependency>
-            <!--druid-spring-boot-starter-->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>druid-spring-boot-starter</artifactId>
-                <version>${druid-spring-boot-starter.version}</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
@@ -396,19 +324,6 @@
                 <version>${fastjson.version}</version>
             </dependency>
 
-            <!--quartz-->
-            <dependency>
-                <groupId>org.quartz-scheduler</groupId>
-                <artifactId>quartz</artifactId>
-                <version>${quartz.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.quartz-scheduler</groupId>
-                <artifactId>quartz-jobs</artifactId>
-                <version>${quartz.version}</version>
-            </dependency>
-
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
@@ -416,16 +331,6 @@
             </dependency>
 
             <!-- utils -->
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-validator</artifactId>
-                <version>${hibernate-validator.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-web</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
@@ -509,7 +414,6 @@
                 <artifactId>poi</artifactId>
                 <version>${poi.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml</artifactId>
@@ -520,6 +424,58 @@
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
                 <version>${commons.lang.version}</version>
+            </dependency>
+
+            <!-- spring-boot-starters module dependency management -->
+            <dependency>
+                <groupId>cn.com.siss</groupId>
+                <artifactId>spring-boot-starter-core</artifactId>
+                <version>${starters.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.com.siss</groupId>
+                <artifactId>spring-boot-starter-mybatis</artifactId>
+                <version>${starters.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.com.siss</groupId>
+                <artifactId>spring-boot-starter-grpc</artifactId>
+                <version>${starters.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.com.siss</groupId>
+                <artifactId>spring-boot-starter-kafka</artifactId>
+                <version>${starters.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.com.siss</groupId>
+                <artifactId>spring-boot-starter-logging</artifactId>
+                <version>${starters.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.com.siss</groupId>
+                <artifactId>spring-boot-starter-redis</artifactId>
+                <version>${starters.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.com.siss</groupId>
+                <artifactId>spring-boot-starter-util</artifactId>
+                <version>${starters.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.com.siss</groupId>
+                <artifactId>spring-boot-starter-validate</artifactId>
+                <version>${starters.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.com.siss</groupId>
+                <artifactId>spring-boot-starter-mongo</artifactId>
+                <version>${starters.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.com.siss</groupId>
+                <artifactId>spring-boot-starter-amqp</artifactId>
+                <version>${starters.version}</version>
             </dependency>
 
         </dependencies>
@@ -703,7 +659,9 @@
                         <registryUrl>${docker.registryUrl}</registryUrl>
                         <forceTags>${docker.forceTags}</forceTags>
                         <pushImage>${docker.pushImage}</pushImage>
-                        <imageName>${docker.registryUrl}/siss/${project.groupName}_${project.artifactId}:${project.version}</imageName>
+                        <imageName>
+                            ${docker.registryUrl}/siss/${project.groupName}_${project.artifactId}:${project.version}
+                        </imageName>
                         <dockerHost>${dockerHost}</dockerHost>
                         <dockerDirectory>${project.basedir}</dockerDirectory>
                         <buildArgs>
