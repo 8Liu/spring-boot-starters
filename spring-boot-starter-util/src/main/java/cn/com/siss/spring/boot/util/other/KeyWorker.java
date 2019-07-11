@@ -8,11 +8,12 @@ import java.util.Enumeration;
 
 /**
  * @ClassName KeyWorker
- * @Description TODO
+ * @Description use the standard {@link /gitlab.sissyun.com.cn/frameworks/siss-common} constraint instead
  * @Author clare
  * @Date 2019/2/21 15:25
  * @Version 1.0
  */
+@Deprecated
 public class KeyWorker {
     private final static long twepoch = 12888349746579L;
     // 机器标识位数

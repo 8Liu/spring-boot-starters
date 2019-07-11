@@ -12,11 +12,12 @@ import java.util.Map;
 
 /**
  * @ClassName RSACoder
- * @Description TODO
+ * @Description use the standard {@link /gitlab.sissyun.com.cn/frameworks/siss-common} constraint instead
  * @Author clare
  * @Date 2019/3/4 18:00
  * @Version 1.0
  */
+@Deprecated
 public class RSACoder {
     //非对称密钥算法
     public static final String KEY_ALGORITHM = "RSA";

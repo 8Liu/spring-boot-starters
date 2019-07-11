@@ -2,11 +2,12 @@ package cn.com.siss.spring.boot.util.base;
 
 /**
  * @ClassName BackResponseUtil
- * @Description 获取 baseResponse 基类
+ * @Description use the standard {@link /gitlab.sissyun.com.cn/frameworks/siss-common} constraint instead
  * @Author clare
  * @Date 2019/2/19 13:41
  * @Version 1.0
  */
+@Deprecated
 public class BackResponseUtil {
 
     //获取 BaseResponse

@@ -6,11 +6,12 @@ import java.util.Date;
 
 /**
  * @ClassName DateUtil
- * @Description 时间
+ * @Description use the standard {@link /gitlab.sissyun.com.cn/frameworks/siss-common} constraint instead
  * @Author clare
  * @Date 2019/2/19 15:18
  * @Version 1.0
  */
+@Deprecated
 public class DateUtil {
     public static String FormatDate(){
         Date date = new Date();

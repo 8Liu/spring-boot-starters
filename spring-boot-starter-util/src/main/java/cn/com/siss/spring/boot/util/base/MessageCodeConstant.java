@@ -4,11 +4,12 @@ import java.io.Serializable;
 
 /**
  * @ClassName MessageCodeConstant
- * @Description 国际化message基础常量
+ * @Description use the standard {@link /gitlab.sissyun.com.cn/frameworks/siss-common} constraint instead
  * @Author clare
  * @Date 2019/2/19 11:25
  * @Version 1.0
  */
+@Deprecated
 public class MessageCodeConstant implements Serializable {
     /**
      * 成功

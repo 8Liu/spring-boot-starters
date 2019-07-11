@@ -10,8 +10,10 @@ import java.io.IOException;
 import java.util.Random;
 
 /**
+ * @Description use the standard {@link /gitlab.sissyun.com.cn/frameworks/siss-common} constraint instead
  * 验证码生成类
  */
+@Deprecated
 public class ValidateCode {
     protected ValidateCode() {
 

@@ -9,11 +9,12 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * @ClassName PageResponse
- * @Description TODO
+ * @Description use the standard {@link /gitlab.sissyun.com.cn/frameworks/siss-common} constraint instead
  * @Author clare
  * @Date 2019/3/11 10:23
  * @Version 1.0
  */
+@Deprecated
 @ToString(callSuper = true)
 public class PageResponse<T> extends Response implements Serializable {
     private static final long serialVersionUID = 1L;

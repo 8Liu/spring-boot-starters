@@ -2,11 +2,12 @@ package cn.com.siss.spring.boot.util.base;
 
 /**
  * @ClassName ReturnCodeEnum
- * @Description 接口返回值枚举
+ * @Description use the standard {@link /gitlab.sissyun.com.cn/frameworks/siss-common} constraint instead
  * @Author clare
  * @Date 2019/2/19 11:25
  * @Version 1.0
  */
+@Deprecated
 public enum ReturnCodeEnum {
     MESSAGE_COMMON_SUCCESS(1000, MessageCodeConstant.MESSAGE_COMMON_SUCCESS),// 数据处理成功
     MESSAGE_SECURITY_UNAUTHORIZED(1001, MessageCodeConstant.MESSAGE_SECURITY_UNAUTHORIZED),// 系统应用间对签名或TOKEN验证不通过

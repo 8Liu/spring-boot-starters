@@ -2,11 +2,12 @@ package cn.com.siss.spring.boot.util.exception;
 
 /**
  * @ClassName IdGeneratorException
- * @Description TODO
+ * @Description use the standard {@link /gitlab.sissyun.com.cn/frameworks/siss-common} constraint instead
  * @Author clare
  * @Date 2019/2/21 15:43
  * @Version 1.0
  */
+@Deprecated
 public class IdGeneratorException extends Exception{
     private static final long serialVersionUID = 1L;
 

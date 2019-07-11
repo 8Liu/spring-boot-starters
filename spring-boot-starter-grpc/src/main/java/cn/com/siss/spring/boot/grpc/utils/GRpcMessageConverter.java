@@ -47,7 +47,13 @@ public class GRpcMessageConverter {
             if (null != propertyAccessor && null != value
                     && Date.class.equals(propertyAccessor.getPropertyType(name))) {
                 if (value instanceof Long) {
-                    value = new Date((Long) value);
+                    Long timeValue = (Long) value;
+                    // 如果值为Long类型的最小值时, 日期设为NULL
+                    if (timeValue > Long.MIN_VALUE) {
+                        value = new Date(timeValue);
+                    } else {
+                        value = null;
+                    }
                 } else if (!(value instanceof Date)) {
                     value = null;
                 }
@@ -200,7 +206,12 @@ public class GRpcMessageConverter {
             for (Descriptors.FieldDescriptor field : fieldDescriptor.getFields()) {
                 Object value = getField(propertyAccessor, field.getName());
                 if (null == value) {
-                    continue;
+                    // 如果是日期类型, 则赋为Long类的最小值
+                    if (Date.class.equals(propertyAccessor.getPropertyType(field.getName()))) {
+                        value = Long.MIN_VALUE;
+                    } else {
+                        continue;
+                    }
                 }
 
                 if (Descriptors.FieldDescriptor.Type.MESSAGE == field.getType()) {

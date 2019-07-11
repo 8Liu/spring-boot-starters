@@ -22,9 +22,11 @@ import java.util.UUID;
  * 高效GUID产生算法(sequence),基于Snowflake实现64位自增ID算法。 <br>
  * 优化开源项目 http://git.oschina.net/yu120/sequence
  * </p>
+ * @Description use the standard {@link /gitlab.sissyun.com.cn/frameworks/siss-common} constraint instead
  * @author hubin
  * @Date 2016-08-01
  */
+@Deprecated
 public class IdWorker {
 
     /**

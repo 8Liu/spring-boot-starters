@@ -19,10 +19,12 @@ import java.util.concurrent.ThreadLocalRandom;
  * 分布式高效有序ID生产黑科技(sequence) <br>
  * 优化开源项目：http://git.oschina.net/yu120/sequence
  * </p>
+ * @Description use the standard {@link /gitlab.sissyun.com.cn/frameworks/siss-common} constraint instead
  *
  * @author hubin
  * @date 2016-08-18
  */
+@Deprecated
 @Slf4j
 public class Sequence {
 

@@ -15,10 +15,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * @Description use the standard {@link /gitlab.sissyun.com.cn/frameworks/siss-common} constraint instead
  * @author yi.z
  * @category 二维码工具类
  * @date 2015-8-4上午10:28:02
  */
+@Deprecated
 @Slf4j
 public class QRUtils {
 

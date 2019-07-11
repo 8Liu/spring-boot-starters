@@ -9,12 +9,12 @@ import java.io.Serializable;
 
 /**
  * @ClassName BaseResponse
- * @Description 基类 baseResponse
+ * @Description use the standard {@link /gitlab.sissyun.com.cn/frameworks/siss-common} constraint instead
  * @Author clare
  * @Date 2019/2/19 13:41
  * @Version 1.0
  */
-
+@Deprecated
 @Slf4j
 @Getter
 @Setter

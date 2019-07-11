@@ -9,12 +9,12 @@ import java.io.Serializable;
 
 /**
  * @ClassName Response
- * @Description TODO
+ * @Description use the standard {@link /gitlab.sissyun.com.cn/frameworks/siss-common} constraint instead
  * @Author clare
  * @Date 2019/3/11 10:26
  * @Version 1.0
  */
-
+@Deprecated
 @Slf4j
 @Getter
 @Setter

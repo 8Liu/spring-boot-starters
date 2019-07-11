@@ -10,11 +10,12 @@ import java.util.Set;
 
 /**
  * @ClassName ValidationUtils
- * @Description TODO
+ * @Description use the standard {@link /gitlab.sissyun.com.cn/frameworks/siss-common} constraint instead
  * @Author clare
  * @Date 2019/2/19 23:40
  * @Version 1.0
  */
+@Deprecated
 public class ValidationUtils {
     /**
      * 使用hibernate的注解来进行验证

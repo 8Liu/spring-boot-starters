@@ -5,7 +5,10 @@ import lombok.Setter;
 
 import java.io.Serializable;
 
-
+/**
+ * @Description use the standard {@link /gitlab.sissyun.com.cn/frameworks/siss-common} constraint instead
+ */
+@Deprecated
 @Setter
 @Getter
 public class BaseParam implements Serializable {

@@ -57,16 +57,16 @@ public class DynamicDataSourceConfig {
      * @throws Exception
      */
     private Map<Object, Object> initDataSource() throws Exception {
-        Map<Object, Object> dbMap = new HashMap<Object, Object>();
+        Map<Object, Object> dataSourceMap = new HashMap<Object, Object>();
         Map<String, Properties> prop2dbMap = DataSourcePropertiesUtil.prop2DBMap(ddsProperties.getDatasource(),
                 ddsProperties.getDynamicDataBase());
         Set<Map.Entry<String, Properties>> entrySet = prop2dbMap.entrySet();
         for (Map.Entry<String, Properties> entry : entrySet) {
             // 创建数据源对象
-            DruidDataSource db = (DruidDataSource) DruidDataSourceFactory.createDataSource(entry.getValue());
-            dbMap.put(entry.getKey(), db);
+            DruidDataSource druidDataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(entry.getValue());
+            dataSourceMap.put(entry.getKey(), druidDataSource);
         }
-        return dbMap;
+        return dataSourceMap;
     }
 
     /**
@@ -76,7 +76,7 @@ public class DynamicDataSourceConfig {
      *
      * @return 动态数据源对象
      */
-    @Bean
+    @Bean(name = "dynamicDataSource")
     public DataSource dynamicDataSource() throws Exception {
 
         MapDataSourceLookup dataSourceLookup = new MapDataSourceLookup();

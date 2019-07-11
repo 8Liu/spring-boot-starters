@@ -18,15 +18,16 @@
     <modules>
         <!--<module>spring-boot-starter-dubbo</module>-->
         <module>spring-boot-starter-mybatis</module>
-        <module>spring-boot-starter-grpc</module>
-        <module>spring-boot-starter-logging</module>
-        <module>spring-boot-starter-redis</module>
-        <module>spring-boot-starter-validate</module>
-        <module>spring-boot-starter-core</module>
-        <module>spring-boot-starter-util</module>
-        <module>spring-boot-starter-kafka</module>
         <module>spring-boot-starter-mongo</module>
+        <module>spring-boot-starter-grpc</module>
+        <module>spring-boot-starter-redis</module>
+        <module>spring-boot-starter-kafka</module>
         <module>spring-boot-starter-amqp</module>
+        <module>spring-boot-starter-core</module>
+        <module>spring-boot-starter-logging</module>
+        <module>spring-boot-starter-swagger</module>
+        <module>spring-boot-starter-util</module>
+        <module>spring-boot-starter-validate</module>
     </modules>
 
 
@@ -52,7 +53,7 @@
         <docker.forceTags>true</docker.forceTags>
         <docker.pushImage>true</docker.pushImage>
         <dockerHost>${env.DOCKER_HOST}</dockerHost>
-        <project.groupName>demo</project.groupName>
+        <project.groupName>frameworks</project.groupName>
 
         <!--testing-->
         <testng.version>6.10</testng.version>
@@ -77,7 +78,6 @@
         <slf4j.version>1.7.21</slf4j.version>
         <lombok.version>1.16.12</lombok.version>
 
-        <fastjson.version>1.2.47</fastjson.version>
         <!--grpc-->
         <os.maven.plugin.version>1.4.1.Final</os.maven.plugin.version>
         <protobuf.maven.plugin.version>0.5.0</protobuf.maven.plugin.version>
@@ -88,6 +88,7 @@
         <hazelcast-kubernetes-version>1.1.1-SNAPSHOT</hazelcast-kubernetes-version>
         <!--spring-->
         <spring.version>4.3.11.RELEASE</spring.version>
+        <spring.data.version>1.11.4.RELEASE</spring.data.version>
         <spring.integration.version>4.3.11.RELEASE</spring.integration.version>
         <spring.integration.kafka.version>2.1.0.RELEASE</spring.integration.kafka.version>
 
@@ -103,6 +104,7 @@
         <spring.webmvc.version>4.3.2.RELEASE</spring.webmvc.version>
         <shiro.version>1.4.0</shiro.version>
         <servlet.api.version>2.5</servlet.api.version>
+        <javaee.api.version>7.0</javaee.api.version>
 
         <!-- swagger -->
         <swagger.version>2.6.1</swagger.version>
@@ -111,17 +113,6 @@
         <axon.version>3.1.2</axon.version>
         <jackson-datatype.version>2.9.0</jackson-datatype.version>
         <jgroups-kubernetes.version>1.0.4-SNAPSHOT</jgroups-kubernetes.version>
-        <jsr310.version>2.6.5</jsr310.version>
-        <java.version>1.8</java.version>
-        <grpc.version>1.9.0</grpc.version>
-        <poi.version>3.10-FINAL</poi.version>
-        <commons.lang.version>2.6</commons.lang.version>
-        <httpcomponents.httpclient.version>4.5.1</httpcomponents.httpclient.version>
-        <httpcomponents.httpmime.version>4.5.2</httpcomponents.httpmime.version>
-        <servlet.api.version>2.5</servlet.api.version>
-        <commons.lang.version>2.6</commons.lang.version>
-        <commons.lang3.version>3.4</commons.lang3.version>
-        <grpc.version>1.9.0</grpc.version>
         <!--quartz-->
         <quartz.version>2.2.1</quartz.version>
 
@@ -132,21 +123,19 @@
         <guava.version>19.0</guava.version>
 
         <!-- utils -->
-        <spring.data.version>1.11.4.RELEASE</spring.data.version>
-        <javaee.api.version>7.0</javaee.api.version>
         <commons.io.version>2.4</commons.io.version>
         <commons.beanutils.version>1.9.2</commons.beanutils.version>
         <commons.lang.version>2.6</commons.lang.version>
         <commons.lang3.version>3.4</commons.lang3.version>
         <commons.net.version>3.3</commons.net.version>
         <commons.codec.version>1.10</commons.codec.version>
-        <commons.httpclient.version>3.1</commons.httpclient.version>
         <httpcomponents.httpclient.version>4.5.1</httpcomponents.httpclient.version>
         <httpcomponents.httpmime.version>4.5.2</httpcomponents.httpmime.version>
+        <poi.version>3.10-FINAL</poi.version>
         <google.zxing.core.version>3.2.1</google.zxing.core.version>
         <google.zxing.javase.version>3.2.1</google.zxing.javase.version>
         <jackson.databind.version>2.6.5</jackson.databind.version>
-        <poi.version>3.10-FINAL</poi.version>
+        <fastjson.version>1.2.47</fastjson.version>
 
     </properties>
 
@@ -173,7 +162,6 @@
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
@@ -204,6 +192,7 @@
             <version>${rest-assured.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
@@ -232,8 +221,19 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
                 <artifactId>spring-context-support</artifactId>
                 <version>${spring.version}</version>
+            </dependency>
+            <!-- kafka -->
+            <dependency>
+                <groupId>org.springframework.kafka</groupId>
+                <artifactId>spring-kafka</artifactId>
+                <version>${org.springframework.kafka.version}</version>
             </dependency>
 
             <!-- MySql数据库驱动 -->
@@ -259,6 +259,11 @@
                 <artifactId>mybatis-plus</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper</artifactId>
+                <version>${pagehelper.version}</version>
+            </dependency>
 
             <!-- grpc -->
             <dependency>
@@ -273,13 +278,6 @@
                 <version>3.5.1</version>
             </dependency>
 
-            <!-- kafka -->
-            <dependency>
-                <groupId>org.springframework.kafka</groupId>
-                <artifactId>spring-kafka</artifactId>
-                <version>${org.springframework.kafka.version}</version>
-            </dependency>
-
             <!--lombok-->
             <dependency>
                 <groupId>org.projectlombok</groupId>
@@ -287,20 +285,16 @@
                 <version>${lombok.version}</version>
             </dependency>
 
+            <!-- springfox-swagger -->
             <dependency>
-                <groupId>com.github.pagehelper</groupId>
-                <artifactId>pagehelper</artifactId>
-                <version>${pagehelper.version}</version>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>${swagger.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-            </dependency>
-            <!-- ali excel tool -->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>easyexcel</artifactId>
-                <version>1.0.4</version>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${swagger.version}</version>
             </dependency>
 
             <dependency>
@@ -316,7 +310,18 @@
                 <artifactId>jackson-annotations</artifactId>
                 <version>${com.fasterxml.jackson.core}</version>
             </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${com.fasterxml.jackson.core}</version>
+            </dependency>
 
+            <!-- ali excel tool -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>1.0.4</version>
+            </dependency>
             <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
             <dependency>
                 <groupId>com.alibaba</groupId>
@@ -324,19 +329,7 @@
                 <version>${fastjson.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
-            </dependency>
-
             <!-- utils -->
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
@@ -348,34 +341,31 @@
                 <version>${slf4j.version}</version>
             </dependency>
 
+
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${commons.lang.version}</version>
+            </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons.io.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>commons-beanutils</groupId>
                 <artifactId>commons-beanutils</artifactId>
                 <version>${commons.beanutils.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>commons-net</groupId>
                 <artifactId>commons-net</artifactId>
                 <version>${commons.net.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
                 <version>${commons.codec.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>commons-httpclient</groupId>
-                <artifactId>commons-httpclient</artifactId>
-                <version>${commons.httpclient.version}</version>
             </dependency>
 
             <dependency>
@@ -389,11 +379,21 @@
                 <artifactId>httpclient</artifactId>
                 <version>${httpcomponents.httpclient.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpmime</artifactId>
                 <version>${httpcomponents.httpmime.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${poi.version}</version>
             </dependency>
 
             <!-- QRCode Begin -->
@@ -410,31 +410,20 @@
             <!-- QRCode End -->
 
             <dependency>
-                <groupId>org.apache.poi</groupId>
-                <artifactId>poi</artifactId>
-                <version>${poi.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.poi</groupId>
-                <artifactId>poi-ooxml</artifactId>
-                <version>${poi.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>commons-lang</groupId>
-                <artifactId>commons-lang</artifactId>
-                <version>${commons.lang.version}</version>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
             </dependency>
 
             <!-- spring-boot-starters module dependency management -->
             <dependency>
                 <groupId>cn.com.siss</groupId>
-                <artifactId>spring-boot-starter-core</artifactId>
+                <artifactId>spring-boot-starter-mybatis</artifactId>
                 <version>${starters.version}</version>
             </dependency>
             <dependency>
                 <groupId>cn.com.siss</groupId>
-                <artifactId>spring-boot-starter-mybatis</artifactId>
+                <artifactId>spring-boot-starter-mongo</artifactId>
                 <version>${starters.version}</version>
             </dependency>
             <dependency>
@@ -444,7 +433,22 @@
             </dependency>
             <dependency>
                 <groupId>cn.com.siss</groupId>
+                <artifactId>spring-boot-starter-redis</artifactId>
+                <version>${starters.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.com.siss</groupId>
                 <artifactId>spring-boot-starter-kafka</artifactId>
+                <version>${starters.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.com.siss</groupId>
+                <artifactId>spring-boot-starter-amqp</artifactId>
+                <version>${starters.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.com.siss</groupId>
+                <artifactId>spring-boot-starter-core</artifactId>
                 <version>${starters.version}</version>
             </dependency>
             <dependency>
@@ -454,7 +458,7 @@
             </dependency>
             <dependency>
                 <groupId>cn.com.siss</groupId>
-                <artifactId>spring-boot-starter-redis</artifactId>
+                <artifactId>spring-boot-starter-swagger</artifactId>
                 <version>${starters.version}</version>
             </dependency>
             <dependency>
@@ -465,16 +469,6 @@
             <dependency>
                 <groupId>cn.com.siss</groupId>
                 <artifactId>spring-boot-starter-validate</artifactId>
-                <version>${starters.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.com.siss</groupId>
-                <artifactId>spring-boot-starter-mongo</artifactId>
-                <version>${starters.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.com.siss</groupId>
-                <artifactId>spring-boot-starter-amqp</artifactId>
                 <version>${starters.version}</version>
             </dependency>
 

@@ -25,12 +25,12 @@ import java.util.Map;
 
 /**
  * @ClassName ExceptionConfigController
- * @Description 父类
+ * @Description use the standard {@link /gitlab.sissyun.com.cn/frameworks/siss-common} constraint instead
  * @Author clare
  * @Date 2019/3/22 13:40
  * @Version 1.0
  */
-
+@Deprecated
 @ControllerAdvice
 @ResponseBody
 @Slf4j

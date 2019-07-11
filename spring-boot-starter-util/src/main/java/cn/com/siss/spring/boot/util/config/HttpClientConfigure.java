@@ -22,6 +22,10 @@ import java.security.cert.X509Certificate;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @Description use the standard {@link /gitlab.sissyun.com.cn/frameworks/siss-common} constraint instead
+ */
+@Deprecated
 @Configuration
 public class HttpClientConfigure {
 
