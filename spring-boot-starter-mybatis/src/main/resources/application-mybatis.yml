@@ -20,7 +20,7 @@ spring:
     testOnReturn: false
     # 检测连接池泄露
     removeAbandoned: true
-    removeAbandonedimeout: 1800
+    removeAbandonedTimeout: 1800
     logAbandoned: true
     # encrypt password
     filters: config,stat,wall,log4j
