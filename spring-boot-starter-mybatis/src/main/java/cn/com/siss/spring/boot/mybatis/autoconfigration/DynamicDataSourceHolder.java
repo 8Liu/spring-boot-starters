@@ -32,6 +32,11 @@ public class DynamicDataSourceHolder {
     private static Map<Object, Object> dataSourceMap = new HashMap<Object, Object>();
 
     /**
+     * 默认数据据名称
+     */
+    private static String DefaultTargetDataSource;
+
+    /**
      * 切换数据源名
      *
      * @param dataSourceKey
@@ -75,4 +80,21 @@ public class DynamicDataSourceHolder {
         return dataSourceMap.containsKey(key);
     }
 
+    /**
+     * 获取默认数据据名称
+     *
+     * @return
+     */
+    public static String getDefaultTargetDataSource() {
+        return DefaultTargetDataSource;
+    }
+
+    /**
+     * 设置默认数据据名称
+     *
+     * @param defaultTargetDataSource
+     */
+    public static void setDefaultTargetDataSource(String defaultTargetDataSource) {
+        DefaultTargetDataSource = defaultTargetDataSource;
+    }
 }

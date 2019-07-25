@@ -1,12 +1,13 @@
 package cn.com.siss.spring.boot.mybatis.autoconfigration;
 
+import cn.com.siss.spring.boot.mybatis.model.DynamicDataSource;
+import cn.com.siss.spring.boot.mybatis.utils.DataSourcePropertiesUtil;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +22,6 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 /**
  * 数据源配置管理
@@ -35,39 +35,13 @@ import java.util.Set;
  * @Version: 1.0
  */
 @Configuration
-@EnableConfigurationProperties({DataSourceProperties.class})
+@EnableConfigurationProperties({DataSourceProperties.class, MybatisProperties.class})
 public class DynamicDataSourceConfig {
 
     @Autowired
     private DataSourceProperties ddsProperties;
-
-    @Value("${mybatis.typeAliasesPackage:}")
-    private String typeAliasesPackage;
-
-    @Value("${mybatis.mapperLocations}")
-    private String mapperLocations;
-
-    @Value("${mybatis.configLocation:}")
-    private String configLocation;
-
-    /**
-     * 初始化数据源对象
-     *
-     * @return
-     * @throws Exception
-     */
-    private Map<Object, Object> initDataSource() throws Exception {
-        Map<Object, Object> dataSourceMap = new HashMap<Object, Object>();
-        Map<String, Properties> prop2dbMap = DataSourcePropertiesUtil.prop2DBMap(ddsProperties.getDatasource(),
-                ddsProperties.getDynamicDataBase());
-        Set<Map.Entry<String, Properties>> entrySet = prop2dbMap.entrySet();
-        for (Map.Entry<String, Properties> entry : entrySet) {
-            // 创建数据源对象
-            DruidDataSource druidDataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(entry.getValue());
-            dataSourceMap.put(entry.getKey(), druidDataSource);
-        }
-        return dataSourceMap;
-    }
+    @Autowired
+    private MybatisProperties mybatisProperties;
 
     /**
      * spring boot 启动后将自定义创建好的数据源对象放到TargetDataSources中用于后续的切换数据源用
@@ -80,17 +54,33 @@ public class DynamicDataSourceConfig {
     public DataSource dynamicDataSource() throws Exception {
 
         MapDataSourceLookup dataSourceLookup = new MapDataSourceLookup();
-        Map<Object, Object> initDataSourceMap = initDataSource();
-        for (Map.Entry<Object, Object> entry : initDataSourceMap.entrySet()) {
-            dataSourceLookup.addDataSource((String) entry.getKey(), (DataSource) entry.getValue());
+
+        DynamicDataSource dynamicDataSource;
+        if (StringUtils.isEmpty(ddsProperties.getWebDatasourceUrl())) {
+            // 数据源配置转换成动态数据源对象信息
+            dynamicDataSource = DataSourcePropertiesUtil.convertDatasource(ddsProperties);
+        } else {
+            // 获取数据源管理系统的数据源对象信息
+            dynamicDataSource = DataSourcePropertiesUtil.getWebDatasource(ddsProperties.getWebDatasourceUrl());
+        }
+
+        Map<Object, Object> dataSourceMap = new HashMap<Object, Object>();
+        for (Map.Entry<String, Properties> entry : dynamicDataSource.getDynamicDatabase().entrySet()) {
+            // 创建数据源对象
+            DruidDataSource druidDataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(entry.getValue());
+
+            dataSourceLookup.addDataSource(entry.getKey(), druidDataSource);
+            dataSourceMap.put(entry.getKey(), druidDataSource);
         }
 
         // 创建动态数据源路由器
         DynamicRoutingDataSource dataSource = new DynamicRoutingDataSource();
+        // 设置数据源索引
         dataSource.setDataSourceLookup(dataSourceLookup);
-        // 设定默认数据源
-        dataSource.setDefaultTargetDataSource(ddsProperties.getMainDatabase());
-        dataSource.setTargetDataSources(initDataSourceMap);
+        // 设定默认数据源名称
+        dataSource.setDefaultTargetDataSource(dynamicDataSource.getMainDatabase());
+        // 设置数据源
+        dataSource.setTargetDataSources(dataSourceMap);
         return dataSource;
     }
 
@@ -108,16 +98,16 @@ public class DynamicDataSourceConfig {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dynamicDataSource);
 
-        if (!StringUtils.isEmpty(typeAliasesPackage)) {
-            sqlSessionFactoryBean.setTypeAliasesPackage(typeAliasesPackage);
+        if (!StringUtils.isEmpty(mybatisProperties.getTypeAliasesPackage())) {
+            sqlSessionFactoryBean.setTypeAliasesPackage(mybatisProperties.getTypeAliasesPackage());
         }
 
         // 此处设置为了解决找不到mapper文件的问题
         PathMatchingResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
-        sqlSessionFactoryBean.setMapperLocations(resourcePatternResolver.getResources(mapperLocations));
+        sqlSessionFactoryBean.setMapperLocations(resourcePatternResolver.getResources(mybatisProperties.getMapperLocations()));
 
-        if (!StringUtils.isEmpty(configLocation)) {
-            sqlSessionFactoryBean.setConfigLocation(resourcePatternResolver.getResource(configLocation));
+        if (!StringUtils.isEmpty(mybatisProperties.getConfigLocation())) {
+            sqlSessionFactoryBean.setConfigLocation(resourcePatternResolver.getResource(mybatisProperties.getConfigLocation()));
         }
         return sqlSessionFactoryBean.getObject();
     }

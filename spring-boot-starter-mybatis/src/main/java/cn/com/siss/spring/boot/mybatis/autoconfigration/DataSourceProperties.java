@@ -1,5 +1,6 @@
 package cn.com.siss.spring.boot.mybatis.autoconfigration;
 
+import cn.com.siss.spring.boot.mybatis.utils.DataSourcePropertiesUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -43,4 +44,9 @@ public class DataSourceProperties {
      * 分库数据源配置
      */
     private Map<String, Object> dynamicDataBase;
+
+    /**
+     * 网络数据源配置的URL
+     */
+    private String webDatasourceUrl;
 }

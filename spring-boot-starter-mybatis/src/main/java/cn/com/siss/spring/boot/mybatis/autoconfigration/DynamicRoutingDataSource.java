@@ -28,7 +28,9 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
     protected Object determineCurrentLookupKey() {
         // 从ThreadLocal中获取当前数据源的Key
         Object dataSourceKey = DynamicDataSourceHolder.getDataSourceKey();
-        log.debug("current DataSourceKey : [{}]", dataSourceKey);
+        if (log.isDebugEnabled()) {
+            log.debug("current DataSourceKey : [{}]", dataSourceKey);
+        }
         return dataSourceKey;
     }
 
@@ -41,6 +43,16 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
     public void setTargetDataSources(Map<Object, Object> targetDataSources) {
         super.setTargetDataSources(targetDataSources);
         DynamicDataSourceHolder.getDataSourceMap().putAll(targetDataSources);
-        // super.afterPropertiesSet();// 必须添加该句，否则服务启动后新添加数据源无法识别到
+        super.afterPropertiesSet();// 必须添加该句，否则服务启动后新添加数据源无法识别到
+    }
+
+    /**
+     * 设置默认数据源
+     *
+     * @param defaultTargetDataSource
+     */
+    public void setDefaultTargetDataSource(Object defaultTargetDataSource) {
+        super.setDefaultTargetDataSource(defaultTargetDataSource);
+        DynamicDataSourceHolder.setDefaultTargetDataSource(defaultTargetDataSource.toString());
     }
 }
