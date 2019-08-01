@@ -2,24 +2,7 @@
 logging:
   level:
     org.springframework: info
-    cn.com.siss: info
+    cn.com.siss: warn
   config: classpath:logback-spring.xml
   pattern:
-      console: '%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %green(%logger{64})  - %msg%n'
----
-
-spring:
-  profiles: local
-
-logging:
-  level:
-    cn.com.siss: debug
-
----
-
-spring:
-  profiles: prod
-
-logging:
-  level:
-    cn.com.siss: warn
+    console: '%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %green(%logger{64})  - %msg%n'

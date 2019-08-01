@@ -4,6 +4,7 @@ import cn.com.siss.spring.boot.mybatis.autoconfigration.DataSourceProperties;
 import cn.com.siss.spring.boot.mybatis.model.DynamicDataSource;
 import cn.com.siss.spring.boot.mybatis.model.BaseResponse;
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import java.util.Properties;
  * @UpdateRemark:
  * @Version: 1.0
  */
+@Slf4j
 public class DataSourcePropertiesUtil {
 
     /**
@@ -85,7 +87,9 @@ public class DataSourcePropertiesUtil {
     public static DynamicDataSource getWebDatasource(String webDatasourceUrl) throws Exception {
         DynamicDataSource dynamicDataSource = null;
         // 请求网络通讯
+        log.info("webDatasourceUrl: " + webDatasourceUrl);
         String responseStr = HttpRequestUtil.sendPost(webDatasourceUrl, null);
+        log.info("responseStr: " + responseStr);
         if (!StringUtils.isEmpty(responseStr)) {
             BaseResponse baseResponse = JSONObject.parseObject(responseStr, BaseResponse.class);
             if (null != baseResponse && CODE_1000.equals(baseResponse.getReturnCode())
