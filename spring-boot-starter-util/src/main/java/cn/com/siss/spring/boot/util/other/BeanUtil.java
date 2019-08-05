@@ -1,6 +1,8 @@
 package cn.com.siss.spring.boot.util.other;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -118,7 +120,7 @@ public class BeanUtil {
     /**
      * 拼接get请求的url请求地址
      */
-    public static String getRqstUrl(String url, Map<String, Object> params) {
+    public static String getRqstUrl(String url, Map<String, Object> params) throws UnsupportedEncodingException {
         StringBuilder builder = new StringBuilder(url);
         boolean isFirst = true;
         for (String key : params.keySet()) {
@@ -129,9 +131,15 @@ public class BeanUtil {
                 } else {
                     builder.append("&");
                 }
+                Object value=params.get(key);
+                String urlVal="";
+                if (value!=null){
+                    urlVal=String.valueOf(value);
+                }
+
                 builder.append(key)
                         .append("=")
-                        .append(params.get(key));
+                        .append(URLEncoder.encode(urlVal,"UTF-8"));
             }
         }
         return builder.toString();
