@@ -8,28 +8,34 @@
     <springProperty scope="context" name="GELF_PORT" source="logging.gelf.port" defaultValue="12201"/>
     <springProperty scope="context" name="LOG_PATTERN" source="logging.pattern.console"
                     defaultValue="%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %green(%logger{64})  - %msg%n"/>
-    <!-- 控制台输出 -->
+
+    <!-- ConsoleAppender, 将日志输出到控制台 . 有encoder和target两个子节点(新版本有filter子节点) -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- 子节点encoder , 指定日志输出的格式 , 具体格式配置见下方表格 -->
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
             <pattern>${LOG_PATTERN}</pattern>
         </encoder>
+        <!-- 子节点target, 日志输出的对象 System.out 或 System.err -->
+        <!--<target></target>-->
     </appender>
-    <!-- 按照每天生成日志文件 -->
+
+    <!-- 滚动将日志输出到切分的日志文件 -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 按照每天与文件大小切分生成日志文件 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <!--日志文件输出的文件名 -->
-            <FileNamePattern>${LOG_HOME}/${LOG_NAME}-%d{yyyy-MM-dd}.%i.log
-            </FileNamePattern>
-            <!--日志文件保留天数 -->
+            <!-- 日志文件输出的文件名 -->
+            <FileNamePattern>${LOG_HOME}/${LOG_NAME}-%d{yyyyMMdd}-%i.log.gz</FileNamePattern>
+            <!-- 日志文件保留天数 -->
             <MaxHistory>7</MaxHistory>
-            <!--日志文件保留天数-->
-            <MaxFileSize>10MB</MaxFileSize>
-            <totalSizeCap>10MB</totalSizeCap>
+            <!-- 日志文件最大的大小 -->
+            <MaxFileSize>100MB</MaxFileSize>
+            <!-- 子节点totalSizeCap日志文件上限, 超过后会删除旧的归档日志文件(在1.1.6版本后才开始支持) -->
+            <totalSizeCap>2GB</totalSizeCap>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
-            <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{64})  - %msg%n</pattern>
+            <!-- 格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+            <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{64}) - %msg%n</pattern>
         </encoder>
         <!--日志文件最大的大小 -->
         <!--<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
@@ -37,7 +43,7 @@
         </triggeringPolicy>-->
     </appender>
 
-    <!--输出gelf日志-->
+    <!-- 输出GELF日志 -->
     <appender name="GELF" class="biz.paluch.logging.gelf.logback.GelfLogbackAppender">
         <host>udp:${GELF_HOST}</host>
         <port>${GELF_PORT}</port>
@@ -61,13 +67,18 @@
             <level>INFO</level>
         </filter>
     </appender>
+
+    <!-- root也是logger元素, 它是根logger, 只有一个level属性-->
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
         <appender-ref ref="GELF"/>
     </root>
 
-    <!-- 指定某个包的日志输出级别 -->
+    <!-- logger是用来设置某个包或者具体的某个类的日志输出级别, 以及制定的appender -->
+    <!--       name：用来指定此logger约束的某一个包或者具体的某一个类 -->
+    <!--      level：用来设置输出级别 -->
+    <!-- additivity：是否向上级logger传递打印信息, 默认是true -->
     <!--<logger name="cn.takujo.common" level="INFO" additivity="false">-->
     <!--<appender-ref ref="STDOUT"/>-->
     <!--</logger>-->
