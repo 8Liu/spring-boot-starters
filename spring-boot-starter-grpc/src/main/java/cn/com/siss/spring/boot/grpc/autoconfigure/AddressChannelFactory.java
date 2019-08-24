@@ -3,7 +3,11 @@ package cn.com.siss.spring.boot.grpc.autoconfigure;
 import cn.com.siss.spring.boot.grpc.properties.GRpcChannelProperties;
 import cn.com.siss.spring.boot.grpc.properties.GRpcChannelsProperties;
 import com.google.common.collect.Lists;
-import io.grpc.*;
+import io.grpc.ClientInterceptor;
+import io.grpc.ClientInterceptors;
+import io.grpc.ManagedChannel;
+import io.grpc.internal.GrpcUtil;
+import io.grpc.netty.NegotiationType;
 import io.grpc.netty.NettyChannelBuilder;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,17 +42,32 @@ public class AddressChannelFactory implements GRpcChannelFactory {
         String host = channelProperties.getServerHost();
         host = "".equals(host) ? name : host;
         Integer port = channelProperties.getServerPort();
-        Boolean isEnableKeepAlive = channelProperties.isEnableKeepAlive();
         Long keyAliveDelay = channelProperties.getKeepAliveDelay();
 
-        ManagedChannel channel = NettyChannelBuilder.forAddress(host, port)
-                .usePlaintext(channelProperties.isPlaintext())
-                .enableKeepAlive(isEnableKeepAlive, keyAliveDelay, TimeUnit.SECONDS, channelProperties.getKeepAliveTimeout(), TimeUnit.SECONDS)
-                .build();
+        NegotiationType negotiationType;
+        if (channelProperties.isPlaintext()) {
+            negotiationType = NegotiationType.PLAINTEXT;
+        } else {
+            negotiationType = NegotiationType.PLAINTEXT_UPGRADE;
+        }
+
+        NettyChannelBuilder channelBuilder;
+        if (channelProperties.isEnableKeepAlive()) {
+            channelBuilder = NettyChannelBuilder.forAddress(host, port)
+                    .negotiationType(negotiationType)
+                    .keepAliveTime(keyAliveDelay, TimeUnit.SECONDS)
+                    .keepAliveTimeout(channelProperties.getKeepAliveTimeout(), TimeUnit.SECONDS);
+        } else {
+            channelBuilder = NettyChannelBuilder.forAddress(host, port)
+                    .negotiationType(negotiationType)
+                    .keepAliveTime(GrpcUtil.KEEPALIVE_TIME_NANOS_DISABLED, TimeUnit.NANOSECONDS);
+        }
+        ManagedChannel channel = channelBuilder.build();
 
         if ((null != channel) && !channel.isTerminated() && !channel.isShutdown()) {
             log.info("gRPC channel - connect to server host: {}, port: {}", host, port);
-            log.info("gRPC channel - keep alive : {}, timeout: {} seconds", isEnableKeepAlive ? "yes" : "no", keyAliveDelay);
+            log.info("gRPC channel - keep alive : {}, timeout: {} seconds",
+                    channelProperties.isEnableKeepAlive() ? "yes" : "no", keyAliveDelay);
         }
 
         List<ClientInterceptor> globalInterceptorList = globalClientInterceptorRegistry.getClientInterceptors();
@@ -59,7 +78,7 @@ public class AddressChannelFactory implements GRpcChannelFactory {
         if (interceptors != null && !interceptors.isEmpty()) {
             interceptorSet.addAll(interceptors);
         }
-        return (ManagedChannel)ClientInterceptors.intercept(channel, Lists.newArrayList(interceptorSet));
+        return (ManagedChannel) ClientInterceptors.intercept(channel, Lists.newArrayList(interceptorSet));
     }
 }
 
