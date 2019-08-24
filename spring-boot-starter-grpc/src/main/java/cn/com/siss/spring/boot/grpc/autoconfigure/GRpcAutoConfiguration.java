@@ -25,7 +25,8 @@ public class GRpcAutoConfiguration {
 
     private final GRpcChannelsProperties gRpcChannelsProperties;
 
-    public GRpcAutoConfiguration(GRpcServerProperties gRpcServerProperties, GRpcChannelsProperties gRpcChannelsProperties) {
+    public GRpcAutoConfiguration(GRpcServerProperties gRpcServerProperties,
+                                 GRpcChannelsProperties gRpcChannelsProperties) {
         this.gRpcServerProperties = gRpcServerProperties;
         this.gRpcChannelsProperties = gRpcChannelsProperties;
     }
@@ -43,7 +44,8 @@ public class GRpcAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(value = GRpcChannelFactory.class)
-    public GRpcChannelFactory addressChannelFactory(GRpcChannelsProperties gRpcChannelsProperties, GlobalClientInterceptorRegistry globalClientInterceptorRegistry) {
+    public GRpcChannelFactory addressChannelFactory(GRpcChannelsProperties gRpcChannelsProperties,
+                                                    GlobalClientInterceptorRegistry globalClientInterceptorRegistry) {
         return new AddressChannelFactory(gRpcChannelsProperties, globalClientInterceptorRegistry);
     }
 

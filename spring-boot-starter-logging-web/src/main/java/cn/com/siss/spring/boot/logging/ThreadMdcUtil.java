@@ -45,6 +45,15 @@ public class ThreadMdcUtil {
         }
     }
 
+    /**
+     * 获取LOG_TRACE_ID值
+     *
+     * @return
+     */
+    public static String getTraceId() {
+        return MDC.get(LogConstant.LOG_TRACE_ID);
+    }
+
     public static <T> Callable<T> wrap(final Callable<T> callable, final Map<String, String> context) {
         return () -> {
             if (context == null) {

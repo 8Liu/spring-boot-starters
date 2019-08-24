@@ -82,7 +82,7 @@
         <!--grpc-->
         <os.maven.plugin.version>1.4.1.Final</os.maven.plugin.version>
         <protobuf.maven.plugin.version>0.5.0</protobuf.maven.plugin.version>
-        <grpc.version>1.9.0</grpc.version>
+        <grpc.version>1.10.0</grpc.version>
 
         <!--cache-->
         <hazelcast.version>3.8.3</hazelcast.version>

@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-cn.com.siss.spring.boot.logging.LogMvcConfigurer
+cn.com.siss.spring.boot.logging.LogAspect
