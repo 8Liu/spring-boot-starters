@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.PropertyAccessor;
 import org.springframework.beans.PropertyAccessorFactory;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.Callable;
 
@@ -44,18 +45,25 @@ public class GRpcMessageConverter {
     protected static void setField(PropertyAccessor propertyAccessor, String name, Object value) {
         try {
             log.trace("Set Object field: {}, value: {}", name, value);
-            if (null != propertyAccessor && null != value
-                    && Date.class.equals(propertyAccessor.getPropertyType(name))) {
-                if (value instanceof Long) {
-                    Long timeValue = (Long) value;
-                    // 如果值为Long类型的最小值时, 日期设为NULL
-                    if (timeValue > Long.MIN_VALUE) {
-                        value = new Date(timeValue);
+            if (null != value) {
+                if (Date.class.equals(propertyAccessor.getPropertyType(name))) {
+                    if (value instanceof Long) {
+                        Long timeValue = (Long) value;
+                        // 如果值为Long类型的最小值时, 日期设为NULL
+                        if (timeValue > Long.MIN_VALUE) {
+                            value = new Date(timeValue);
+                        } else {
+                            value = null;
+                        }
+                    } else if (!(value instanceof Date)) {
+                        value = null;
+                    }
+                } else if (BigDecimal.class.equals(propertyAccessor.getPropertyType(name))) {
+                    if (value instanceof Number) {
+                        value = new BigDecimal(value.toString());
                     } else {
                         value = null;
                     }
-                } else if (!(value instanceof Date)) {
-                    value = null;
                 }
             }
             propertyAccessor.setPropertyValue(name, value);
@@ -78,6 +86,8 @@ public class GRpcMessageConverter {
                 value = new String((char[]) value);
             } else if (value instanceof Date) {
                 value = ((Date) value).getTime();
+            } else if (value instanceof BigDecimal) {
+                value = ((BigDecimal) value).doubleValue();
             }
             builder.setField(field, value);
         } catch (Exception e) {
@@ -129,7 +139,7 @@ public class GRpcMessageConverter {
     }
 
 
-    public static List<Object> fromGRpcMessages(List<MessageOrBuilder> messages, Class<?> clazz) {
+    public static List<Object> fromGRpcMessages(Collection<MessageOrBuilder> messages, Class<?> clazz) {
         List<Object> objects = new ArrayList<>();
 
         int i = 0;
@@ -151,6 +161,10 @@ public class GRpcMessageConverter {
             object = newInstance(clazz);
             PropertyAccessor propertyAccessor = PropertyAccessorFactory.forDirectFieldAccess(object);
             Descriptors.Descriptor fieldDescriptor = message.getDescriptorForType();
+            if (null == propertyAccessor || null == fieldDescriptor) {
+                return null;
+            }
+
             for (Descriptors.FieldDescriptor field : fieldDescriptor.getFields()) {
                 Object value = message.getField(field);
                 String fieldName = field.getName();
@@ -159,7 +173,7 @@ public class GRpcMessageConverter {
                     if (("java.util.Collections$EmptyList").equals(valueTypeName)) {
                         continue;
                     } else if (("java.util.Collections$UnmodifiableRandomAccessList").equals(valueTypeName)) {
-                        value = fromGRpcMessages((List<MessageOrBuilder>) value, genericClazz);
+                        value = fromGRpcMessages((Collection<MessageOrBuilder>) value, genericClazz);
                     } else {
                         if ("".equals(value.toString())) {
                             continue;
@@ -181,7 +195,7 @@ public class GRpcMessageConverter {
         return object;
     }
 
-    public static void toGRpcMessages(List<?> objects, Builder builder, Descriptors.FieldDescriptor field) {
+    public static void toGRpcMessages(Collection<?> objects, Builder builder, Descriptors.FieldDescriptor field) {
 
         for (Object object : objects) {
             Message value = null;
@@ -216,8 +230,8 @@ public class GRpcMessageConverter {
 
                 if (Descriptors.FieldDescriptor.Type.MESSAGE == field.getType()) {
                     Builder fieldBuilder = (Builder) getFieldBuilder(builder, field);
-                    if (value instanceof List) {
-                        toGRpcMessages((List<?>) value, builder, field);
+                    if (value instanceof Collection) {
+                        toGRpcMessages((Collection<?>) value, builder, field);
                     } else if (null != fieldBuilder) {
                         Object nestedValue = toGRpcMessage(value, fieldBuilder);
                         setField(builder, field, nestedValue);
