@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+cn.com.siss.spring.boot.scheduled.ScheduledConfig,\
+cn.com.siss.spring.boot.scheduled.AsyncExecutePool

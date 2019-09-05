@@ -26,6 +26,7 @@
         <module>spring-boot-starter-core</module>
         <module>spring-boot-starter-logging</module>
         <module>spring-boot-starter-logging-web</module>
+        <module>spring-boot-starter-scheduled</module>
         <module>spring-boot-starter-swagger</module>
         <module>spring-boot-starter-util</module>
         <module>spring-boot-starter-validate</module>
@@ -460,6 +461,11 @@
             <dependency>
                 <groupId>cn.com.siss</groupId>
                 <artifactId>spring-boot-starter-logging-web</artifactId>
+                <version>${starters.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.com.siss</groupId>
+                <artifactId>spring-boot-starter-scheduled</artifactId>
                 <version>${starters.version}</version>
             </dependency>
             <dependency>
