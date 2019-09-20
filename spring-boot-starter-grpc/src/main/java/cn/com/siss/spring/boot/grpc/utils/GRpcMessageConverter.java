@@ -1,14 +1,21 @@
 package cn.com.siss.spring.boot.grpc.utils;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.GeneratedMessageV3.Builder;
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.util.JsonFormat;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.PropertyAccessor;
 import org.springframework.beans.PropertyAccessorFactory;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.Callable;
@@ -150,15 +157,25 @@ public class GRpcMessageConverter {
         return objects;
     }
 
-    public static Object fromGRpcMessage(MessageOrBuilder message, Class<?> clazz) {
+    public static <T> T fromGRpcMessage(MessageOrBuilder message, Class<T> clazz) {
         return fromGRpcMessage(message, clazz, null);
     }
 
-    public static Object fromGRpcMessage(MessageOrBuilder message, Class<?> clazz, Class<?> genericClazz) {
-
-        Object object = null;
+    public static <T> T fromGRPcMessage(MessageOrBuilder message, TypeReference<T> typeReference) {
         try {
-            object = newInstance(clazz);
+            String jsonString = JsonFormat.printer().includingDefaultValueFields().print(message);
+            return JSONObject.parseObject(jsonString, typeReference);
+        } catch (InvalidProtocolBufferException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static <T> T fromGRpcMessage(MessageOrBuilder message, Class<T> clazz, Class<?> genericClazz) {
+
+        T object = null;
+        try {
+            object = clazz.newInstance();
             PropertyAccessor propertyAccessor = PropertyAccessorFactory.forDirectFieldAccess(object);
             Descriptors.Descriptor fieldDescriptor = message.getDescriptorForType();
             if (null == propertyAccessor || null == fieldDescriptor) {
@@ -173,6 +190,11 @@ public class GRpcMessageConverter {
                     if (("java.util.Collections$EmptyList").equals(valueTypeName)) {
                         continue;
                     } else if (("java.util.Collections$UnmodifiableRandomAccessList").equals(valueTypeName)) {
+                        if (null == genericClazz) {
+                            Field declaredField = clazz.getDeclaredField(fieldName);
+                            // 获取Collection集合属性定义的泛型类别
+                            genericClazz = getCollectionFiledGenericType(declaredField);
+                        }
                         value = fromGRpcMessages((Collection<MessageOrBuilder>) value, genericClazz);
                     } else {
                         if ("".equals(value.toString())) {
@@ -245,5 +267,24 @@ public class GRpcMessageConverter {
         }
 
         return builder.build();
+    }
+
+    /**
+     * 获取Collection集合属性定义的泛型类别
+     *
+     * @param filed
+     * @return
+     * @throws ClassNotFoundException
+     */
+    private static Class<?> getCollectionFiledGenericType(Field filed) throws ClassNotFoundException {
+        if (!Arrays.asList(filed.getType().getInterfaces()).contains(Collection.class)) {
+            throw new RuntimeException("getCollectionFiledGenericType方法需要传Collection类型的Filed属性");
+        }
+        Type genericType = filed.getGenericType();
+        Type[] types = ((ParameterizedType) genericType).getActualTypeArguments();
+        if (types != null && types.length == 1) {
+            return Class.forName(types[0].getTypeName());
+        }
+        throw new RuntimeException("获取集合属性的泛型失败");
     }
 }
