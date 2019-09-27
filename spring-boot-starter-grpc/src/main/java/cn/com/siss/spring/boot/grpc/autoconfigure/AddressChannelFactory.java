@@ -41,7 +41,10 @@ public class AddressChannelFactory implements GRpcChannelFactory {
         Boolean isEnableKeepAlive = channelProperties.isEnableKeepAlive();
         Long keyAliveDelay = channelProperties.getKeepAliveDelay();
 
+        List<ClientInterceptor> globalInterceptorList = globalClientInterceptorRegistry.getClientInterceptors();
+
         ManagedChannel channel = NettyChannelBuilder.forAddress(host, port)
+                .intercept(globalInterceptorList)
                 .usePlaintext(channelProperties.isPlaintext())
                 .enableKeepAlive(isEnableKeepAlive, keyAliveDelay, TimeUnit.SECONDS, channelProperties.getKeepAliveTimeout(), TimeUnit.SECONDS)
                 .build();
@@ -51,14 +54,14 @@ public class AddressChannelFactory implements GRpcChannelFactory {
             log.info("gRPC channel - keep alive : {}, timeout: {} seconds", isEnableKeepAlive ? "yes" : "no", keyAliveDelay);
         }
 
-        List<ClientInterceptor> globalInterceptorList = globalClientInterceptorRegistry.getClientInterceptors();
+        //List<ClientInterceptor> globalInterceptorList = globalClientInterceptorRegistry.getClientInterceptors();
         Set<ClientInterceptor> interceptorSet = new HashSet<>();
-        if (globalInterceptorList != null && !globalInterceptorList.isEmpty()) {
+        /*if (globalInterceptorList != null && !globalInterceptorList.isEmpty()) {
             interceptorSet.addAll(globalInterceptorList);
         }
         if (interceptors != null && !interceptors.isEmpty()) {
             interceptorSet.addAll(interceptors);
-        }
+        }*/
         return (ManagedChannel)ClientInterceptors.intercept(channel, Lists.newArrayList(interceptorSet));
     }
 }
