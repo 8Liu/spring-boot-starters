@@ -23,10 +23,12 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 public class AddressChannelFactory implements GRpcChannelFactory {
+
     private final GRpcChannelsProperties properties;
     private final GlobalClientInterceptorRegistry globalClientInterceptorRegistry;
 
-    public AddressChannelFactory(GRpcChannelsProperties properties, GlobalClientInterceptorRegistry globalClientInterceptorRegistry) {
+    public AddressChannelFactory(GRpcChannelsProperties properties,
+                                 GlobalClientInterceptorRegistry globalClientInterceptorRegistry) {
         this.properties = properties;
         this.globalClientInterceptorRegistry = globalClientInterceptorRegistry;
     }
@@ -65,6 +67,7 @@ public class AddressChannelFactory implements GRpcChannelFactory {
                     .keepAliveTime(GrpcUtil.KEEPALIVE_TIME_NANOS_DISABLED, TimeUnit.NANOSECONDS);
         }
 
+        globalInterceptorList.add(new HeaderClientInterceptor());
         ManagedChannel channel = channelBuilder.intercept(globalInterceptorList).build();
 
         if ((null != channel) && !channel.isTerminated() && !channel.isShutdown()) {
@@ -74,7 +77,7 @@ public class AddressChannelFactory implements GRpcChannelFactory {
         }
 
         Set<ClientInterceptor> interceptorSet = new HashSet<>();
-        return (ManagedChannel)ClientInterceptors.intercept(channel, Lists.newArrayList(interceptorSet));
+        return (ManagedChannel) ClientInterceptors.intercept(channel, Lists.newArrayList(interceptorSet));
     }
 }
 

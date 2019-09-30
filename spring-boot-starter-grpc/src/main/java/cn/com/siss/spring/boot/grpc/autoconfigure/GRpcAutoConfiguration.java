@@ -58,7 +58,7 @@ public class GRpcAutoConfiguration {
         return new GRpcClientBeanPostProcessor();
     }
 
-    @Bean
+    /*@Bean
     @GRpcGlobalInterceptor
     //@ConditionalOnBean(annotation = GRpcService.class)
     public ServerInterceptor serverInterceptor() {
@@ -70,6 +70,6 @@ public class GRpcAutoConfiguration {
     //@ConditionalOnBean(annotation = GRpcClient.class)
     public ClientInterceptor clientInterceptor() {
         return new HeaderClientInterceptor();
-    }
+    }*/
 
 }

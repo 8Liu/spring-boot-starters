@@ -40,7 +40,8 @@ public class GRpcServerRunner implements CommandLineRunner, DisposableBean {
     public void run(String... args) throws Exception {
         log.info("Starting gRPC Server ...");
 
-        Collection<ServerInterceptor> globalInterceptors = getBeanNamesByTypeWithAnnotation(GRpcGlobalInterceptor.class, ServerInterceptor.class)
+        Collection<ServerInterceptor> globalInterceptors
+                = getBeanNamesByTypeWithAnnotation(GRpcGlobalInterceptor.class, ServerInterceptor.class)
                 .map(name -> applicationContext.getBeanFactory().getBean(name, ServerInterceptor.class))
                 .collect(Collectors.toList());
 
@@ -58,7 +59,7 @@ public class GRpcServerRunner implements CommandLineRunner, DisposableBean {
 
                 });
 
-        server = serverBuilder.build().start();
+        server = serverBuilder.intercept(new HeaderServerInterceptor()).build().start();
         log.info("gRPC Server started, listening on port {}.", gRpcServerProperties.getPort());
         startDaemonAwaitThread();
 
@@ -109,7 +110,8 @@ public class GRpcServerRunner implements CommandLineRunner, DisposableBean {
         log.info("gRPC server stopped.");
     }
 
-    private <T> Stream<String> getBeanNamesByTypeWithAnnotation(Class<? extends Annotation> annotationType, Class<T> beanType)
+    private <T> Stream<String> getBeanNamesByTypeWithAnnotation(Class<? extends Annotation> annotationType,
+                                                                Class<T> beanType)
             throws Exception {
         return Stream.of(applicationContext.getBeanNamesForType(beanType))
                 .filter(name -> {

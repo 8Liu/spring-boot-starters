@@ -83,7 +83,9 @@
         <!--grpc-->
         <os.maven.plugin.version>1.4.1.Final</os.maven.plugin.version>
         <protobuf.maven.plugin.version>0.5.0</protobuf.maven.plugin.version>
-        <grpc.version>1.10.0</grpc.version>
+        <grpc.version>1.22.0</grpc.version>
+        <!-- guava -->
+        <guava.version>28.1-jre</guava.version>
 
         <!--cache-->
         <hazelcast.version>3.8.3</hazelcast.version>
@@ -121,9 +123,6 @@
         <!--mongodb-->
         <mongodb-starter.version>1.5.9.RELEASE</mongodb-starter.version>
 
-        <!-- guava -->
-        <guava.version>19.0</guava.version>
-
         <!-- utils -->
         <commons.io.version>2.4</commons.io.version>
         <commons.beanutils.version>1.9.2</commons.beanutils.version>
@@ -131,7 +130,7 @@
         <commons.lang3.version>3.4</commons.lang3.version>
         <commons.net.version>3.3</commons.net.version>
         <commons.codec.version>1.10</commons.codec.version>
-        <httpcomponents.httpclient.version>4.5.1</httpcomponents.httpclient.version>
+        <httpcomponents.httpclient.version>4.5.10</httpcomponents.httpclient.version>
         <httpcomponents.httpmime.version>4.5.2</httpcomponents.httpmime.version>
         <poi.version>3.10-FINAL</poi.version>
         <google.zxing.core.version>3.2.1</google.zxing.core.version>
@@ -231,31 +230,8 @@
                 <artifactId>spring-context-support</artifactId>
                 <version>${spring.version}</version>
             </dependency>
-            <!-- kafka -->
-            <dependency>
-                <groupId>org.springframework.kafka</groupId>
-                <artifactId>spring-kafka</artifactId>
-                <version>${org.springframework.kafka.version}</version>
-            </dependency>
 
-            <!-- MySql数据库驱动 -->
-            <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>${mysql.connector.version}</version>
-            </dependency>
-            <!-- springboot的druid数据源 -->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>druid-spring-boot-starter</artifactId>
-                <version>${druid.starter.version}</version>
-            </dependency>
-            <!-- springboot的mybatis -->
-            <dependency>
-                <groupId>org.mybatis.spring.boot</groupId>
-                <artifactId>mybatis-spring-boot-starter</artifactId>
-                <version>${mybatis.starter.version}</version>
-            </dependency>
+            <!-- mybatis -->
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus</artifactId>
@@ -267,12 +243,6 @@
                 <version>${pagehelper.version}</version>
             </dependency>
 
-            <!-- grpc -->
-            <dependency>
-                <groupId>io.grpc</groupId>
-                <artifactId>grpc-all</artifactId>
-                <version>${grpc.version}</version>
-            </dependency>
             <!-- https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java -->
             <dependency>
                 <groupId>com.google.protobuf</groupId>
@@ -285,18 +255,6 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
-            </dependency>
-
-            <!-- springfox-swagger -->
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger2</artifactId>
-                <version>${swagger.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger-ui</artifactId>
-                <version>${swagger.version}</version>
             </dependency>
 
             <dependency>
@@ -364,11 +322,6 @@
                 <artifactId>commons-net</artifactId>
                 <version>${commons.net.version}</version>
             </dependency>
-            <dependency>
-                <groupId>commons-codec</groupId>
-                <artifactId>commons-codec</artifactId>
-                <version>${commons.codec.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -376,11 +329,6 @@
                 <version>${commons.lang3.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>${httpcomponents.httpclient.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpmime</artifactId>
@@ -410,12 +358,6 @@
                 <version>${google.zxing.javase.version}</version>
             </dependency>
             <!-- QRCode End -->
-
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
-            </dependency>
 
             <!-- spring-boot-starters module dependency management -->
             <dependency>
