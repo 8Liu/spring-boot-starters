@@ -1,9 +1,13 @@
 package cn.com.siss.spring.boot.grpc.utils;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.GeneratedMessageV3.Builder;
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.util.JsonFormat;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.PropertyAccessor;
@@ -159,7 +163,7 @@ public class GRpcMessageConverter {
         return fromGRpcMessage(message, clazz, null);
     }
 
-    /*public static <T> T fromGRPcMessage(MessageOrBuilder message, TypeReference<T> typeReference) {
+    public static <T> T fromGRPcMessage(MessageOrBuilder message, TypeReference<T> typeReference) {
         try {
             String jsonString = JsonFormat.printer().includingDefaultValueFields().print(message);
             return JSONObject.parseObject(jsonString, typeReference);
@@ -167,7 +171,7 @@ public class GRpcMessageConverter {
             e.printStackTrace();
         }
         return null;
-    }*/
+    }
 
     public static <T> T fromGRpcMessage(MessageOrBuilder message, Class<T> clazz, Class<?> genericClazz) {
 
