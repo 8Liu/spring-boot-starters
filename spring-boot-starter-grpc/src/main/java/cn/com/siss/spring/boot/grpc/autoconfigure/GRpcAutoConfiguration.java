@@ -1,9 +1,12 @@
 package cn.com.siss.spring.boot.grpc.autoconfigure;
 
 import cn.com.siss.spring.boot.grpc.annotations.GRpcClient;
+import cn.com.siss.spring.boot.grpc.annotations.GRpcGlobalInterceptor;
 import cn.com.siss.spring.boot.grpc.annotations.GRpcService;
 import cn.com.siss.spring.boot.grpc.properties.GRpcChannelsProperties;
 import cn.com.siss.spring.boot.grpc.properties.GRpcServerProperties;
+import io.grpc.ClientInterceptor;
+import io.grpc.ServerInterceptor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -54,5 +57,19 @@ public class GRpcAutoConfiguration {
     public GRpcClientBeanPostProcessor grpcClientBeanPostProcessor() {
         return new GRpcClientBeanPostProcessor();
     }
+
+    /*@Bean
+    @GRpcGlobalInterceptor
+    //@ConditionalOnBean(annotation = GRpcService.class)
+    public ServerInterceptor serverInterceptor() {
+        return new HeaderServerInterceptor();
+    }
+
+    @Bean
+    @GRpcGlobalInterceptor
+    //@ConditionalOnBean(annotation = GRpcClient.class)
+    public ClientInterceptor clientInterceptor() {
+        return new HeaderClientInterceptor();
+    }*/
 
 }

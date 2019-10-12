@@ -23,10 +23,12 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 public class AddressChannelFactory implements GRpcChannelFactory {
+
     private final GRpcChannelsProperties properties;
     private final GlobalClientInterceptorRegistry globalClientInterceptorRegistry;
 
-    public AddressChannelFactory(GRpcChannelsProperties properties, GlobalClientInterceptorRegistry globalClientInterceptorRegistry) {
+    public AddressChannelFactory(GRpcChannelsProperties properties,
+                                 GlobalClientInterceptorRegistry globalClientInterceptorRegistry) {
         this.properties = properties;
         this.globalClientInterceptorRegistry = globalClientInterceptorRegistry;
     }
@@ -51,6 +53,8 @@ public class AddressChannelFactory implements GRpcChannelFactory {
             negotiationType = NegotiationType.PLAINTEXT_UPGRADE;
         }
 
+        List<ClientInterceptor> globalInterceptorList = globalClientInterceptorRegistry.getClientInterceptors();
+
         NettyChannelBuilder channelBuilder;
         if (channelProperties.isEnableKeepAlive()) {
             channelBuilder = NettyChannelBuilder.forAddress(host, port)
@@ -62,7 +66,9 @@ public class AddressChannelFactory implements GRpcChannelFactory {
                     .negotiationType(negotiationType)
                     .keepAliveTime(GrpcUtil.KEEPALIVE_TIME_NANOS_DISABLED, TimeUnit.NANOSECONDS);
         }
-        ManagedChannel channel = channelBuilder.build();
+
+        globalInterceptorList.add(new HeaderClientInterceptor());
+        ManagedChannel channel = channelBuilder.intercept(globalInterceptorList).build();
 
         if ((null != channel) && !channel.isTerminated() && !channel.isShutdown()) {
             log.info("gRPC channel - connect to server host: {}, port: {}", host, port);
@@ -70,14 +76,7 @@ public class AddressChannelFactory implements GRpcChannelFactory {
                     channelProperties.isEnableKeepAlive() ? "yes" : "no", keyAliveDelay);
         }
 
-        List<ClientInterceptor> globalInterceptorList = globalClientInterceptorRegistry.getClientInterceptors();
         Set<ClientInterceptor> interceptorSet = new HashSet<>();
-        if (globalInterceptorList != null && !globalInterceptorList.isEmpty()) {
-            interceptorSet.addAll(globalInterceptorList);
-        }
-        if (interceptors != null && !interceptors.isEmpty()) {
-            interceptorSet.addAll(interceptors);
-        }
         return (ManagedChannel) ClientInterceptors.intercept(channel, Lists.newArrayList(interceptorSet));
     }
 }

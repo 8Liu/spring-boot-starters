@@ -31,11 +31,11 @@ public class HttpClientConfigure {
 
     public static CloseableHttpClient closeableHttpClient;
 
-    private static final Integer ConnectionTimeout = 60000;
+    private static final Integer ConnectionTimeout = 5000;
 
-    private static final Integer ConnectionRequestTimeout = 10000;
+    private static final Integer ConnectionRequestTimeout = 5000;
 
-    private static final Integer SocketTimeout = 60000;
+    private static final Integer SocketTimeout = 5000;
 
     private static final Integer MaxIdleTime = 30;
 
@@ -58,8 +58,8 @@ public class HttpClientConfigure {
                 .build();
 
         PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(registry);
-        connectionManager.setMaxTotal(200);
-        connectionManager.setDefaultMaxPerRoute(20);
+        connectionManager.setMaxTotal(2000);
+        connectionManager.setDefaultMaxPerRoute(200);
 
         RequestConfig requestConfig = RequestConfig.custom()
                 .setSocketTimeout(SocketTimeout)
