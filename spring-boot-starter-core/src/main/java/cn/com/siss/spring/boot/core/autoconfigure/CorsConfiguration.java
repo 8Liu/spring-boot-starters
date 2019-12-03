@@ -25,7 +25,7 @@ public class CorsConfiguration extends WebMvcConfigurerAdapter {
     private String[] DEFAULT_ORIGINS = {"*"};
 
     private String[] DEFAULT_ALLOWED_HEADERS = {"*"};
-    private String[] DEFAULT_METHODS = {};
+    private String[] DEFAULT_METHODS = {"GET", "HEAD", "POST", "PUT","OPTIONS"};
 
     private boolean DEFAULT_ALLOW_CREDENTIALS = true;
     private long DEFAULT_MAX_AGE = 1800;
@@ -64,9 +64,10 @@ public class CorsConfiguration extends WebMvcConfigurerAdapter {
         }
         logger.info("mappings is " + mappings);
         registry.addMapping(mappings)
-                .allowedOrigins("*")
-                .allowedHeaders("*")
+                .allowedOrigins(allowedOrigins)
+                .allowedHeaders(allowedHeaders)
                 .exposedHeaders(exposedHeaders)
+                .allowedMethods(DEFAULT_METHODS)
                 .allowCredentials(allowCredentials).maxAge(maxAge);
     }
 }
