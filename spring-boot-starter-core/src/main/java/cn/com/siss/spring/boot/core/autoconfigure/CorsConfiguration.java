@@ -63,11 +63,17 @@ public class CorsConfiguration extends WebMvcConfigurerAdapter {
             mappings = "/**";
         }
         logger.info("mappings is " + mappings);
-        registry.addMapping(mappings)
+        /*registry.addMapping(mappings)
                 .allowedOrigins(allowedOrigins)
                 .allowedHeaders(allowedHeaders)
                 .exposedHeaders(exposedHeaders)
                 .allowedMethods(DEFAULT_METHODS)
-                .allowCredentials(allowCredentials).maxAge(maxAge);
+                .allowCredentials(allowCredentials).maxAge(maxAge);*/
+
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowCredentials(true)
+                .allowedMethods("GET", "POST", "DELETE", "PUT")
+                .maxAge(3600);
     }
 }
