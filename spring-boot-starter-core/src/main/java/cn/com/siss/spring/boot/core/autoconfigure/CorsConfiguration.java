@@ -4,8 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
@@ -25,7 +27,7 @@ public class CorsConfiguration extends WebMvcConfigurerAdapter {
     private String[] DEFAULT_ORIGINS = {"*"};
 
     private String[] DEFAULT_ALLOWED_HEADERS = {"*"};
-    private String[] DEFAULT_METHODS = {};
+    private String[] DEFAULT_METHODS = {"GET", "HEAD", "POST", "PUT","OPTIONS"};
 
     private boolean DEFAULT_ALLOW_CREDENTIALS = true;
     private long DEFAULT_MAX_AGE = 1800;
@@ -63,10 +65,28 @@ public class CorsConfiguration extends WebMvcConfigurerAdapter {
             mappings = "/**";
         }
         logger.info("mappings is " + mappings);
-        registry.addMapping(mappings)
-                .allowedOrigins("*")
-                .allowedHeaders("*")
+        /*registry.addMapping(mappings)
+                .allowedOrigins(allowedOrigins)
+                .allowedHeaders(allowedHeaders)
                 .exposedHeaders(exposedHeaders)
-                .allowCredentials(allowCredentials).maxAge(maxAge);
+                .allowedMethods(DEFAULT_METHODS)
+                .allowCredentials(allowCredentials).maxAge(maxAge);*/
+
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowCredentials(true)
+                .allowedMethods("GET", "POST", "DELETE", "PUT")
+                .maxAge(3600);
     }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(buildCorsInterceptor());
+    }
+
+    @Bean
+    public CorsInterceptor buildCorsInterceptor(){
+        return new CorsInterceptor();
+    }
+
 }
