@@ -68,6 +68,8 @@
             <artifactId>common-constants</artifactId>
             <version>1.0.0</version>
         </dependency>
+
+
     </dependencies>
 
     <repositories>
@@ -77,4 +79,15 @@
             <url>https://repo.spring.io/libs-milestone</url>
         </repository>
     </repositories>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.xolstice.maven.plugins</groupId>
+                <artifactId>protobuf-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option java_package = "cn.com.siss.spring.boot.grpc.proto";
+option java_outer_classname = "CommonProto";
+
+message BaseJsonRequest{
+    string jsonData=1;
+}
+
+message BaseJsonResponse{
+    string jsonData=1;
+}
