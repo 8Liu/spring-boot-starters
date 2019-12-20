@@ -21,17 +21,15 @@ import java.util.Arrays;
 @Order
 @Configuration
 public class LogAspect {
-    private static final String POINTCUT_CLASS = "PointcutClass";
 
     /**
-     * 定义Service切点Pointcut
+     * 定义RpcService切点Pointcut
      * 第一个*号：表示返回类型， *号表示所有的类型
      * 第二个*号：表示类名，*号表示所有的类
      * 第三个*号：表示方法名，*号表示所有的方法
      * 后面括弧里面表示方法的参数，两个句点表示任何参数
      */
-    @Pointcut("execution(* cn.com.siss..*.*RpcService.*(..))" +
-            " || execution(* cn.com.siss..*.*ServiceImpl.*(..))")
+    @Pointcut("execution(* cn.com.siss..*.*RpcService.*(..))")
     public void executionService() {
 
     }
@@ -48,6 +46,13 @@ public class LogAspect {
 
     }
 
+    /**
+     * 定义Async方法切点Pointcut
+     */
+    @Pointcut("@annotation(org.springframework.scheduling.annotation.Async)")
+    public void executionAsync() {
+
+    }
 
     /**
      * Service方法前置通知,调用之前调用
@@ -81,12 +86,26 @@ public class LogAspect {
                 HttpServletRequest request = attributes.getRequest();
                 if (null != request) {
                     requestId = request.getHeader(LogConstant.LOG_TRACE_ID);
-                    MDC.put(POINTCUT_CLASS, joinPoint.getSignature().getDeclaringTypeName());
                 }
             }
             doBeforeLog(joinPoint, requestId);
         } catch (Exception e) {
             log.error("Controller方法前置通知处理异常", e);
+        }
+    }
+
+    /**
+     * Async方法前置通知,调用之前调用
+     *
+     * @param joinPoint
+     */
+    @Before(value = "executionAsync()")
+    public void doAsyncBefore(JoinPoint joinPoint) {
+        try {
+            String requestId = ThreadMdcUtil.getTraceId();
+            doBeforeLog(joinPoint, requestId);
+        } catch (Exception e) {
+            log.error("Async方法前置通知处理异常", e);
         }
     }
 
@@ -100,7 +119,6 @@ public class LogAspect {
         // 设置MDC的logTraceId
         if (StringUtils.isEmpty(logTraceId)) {
             ThreadMdcUtil.setTraceId();
-            MDC.put(POINTCUT_CLASS, joinPoint.getSignature().getDeclaringTypeName());
         } else {
             ThreadMdcUtil.setTraceId(logTraceId);
         }
@@ -134,6 +152,17 @@ public class LogAspect {
     }
 
     /**
+     * Async方法后置通知,调用之后调用
+     *
+     * @param joinPoint
+     * @param returnValue 方法返回值
+     */
+    @AfterReturning(pointcut = "executionAsync()", returning = "returnValue")
+    public void doAsyncAfterReturning(JoinPoint joinPoint, Object returnValue) {
+        doAfterReturning(joinPoint, returnValue);
+    }
+
+    /**
      * 方法后置通知的日志处理
      *
      * @param returnValue
@@ -149,11 +178,7 @@ public class LogAspect {
                 }
             }
             // 清除MDC的logTraceId
-            String createTraceClass = MDC.get(POINTCUT_CLASS);
-            if (StringUtils.isEmpty(createTraceClass)
-                    || createTraceClass.equals(joinPoint.getSignature().getDeclaringTypeName())) {
-                MDC.clear();
-            }
+            MDC.clear();
         } catch (Exception e) {
             log.error("方法后置通知处理异常", e);
         }
@@ -178,6 +203,17 @@ public class LogAspect {
      */
     @Around("executionController()")
     public Object controllerAround(ProceedingJoinPoint joinPoint) throws Throwable {
+        return timeAround(joinPoint);
+    }
+
+    /**
+     * Async方法的Around环绕通知,统计方法执行耗时
+     *
+     * @param joinPoint
+     * @return
+     */
+    @Around("executionAsync()")
+    public Object asyncAround(ProceedingJoinPoint joinPoint) throws Throwable {
         return timeAround(joinPoint);
     }
 
