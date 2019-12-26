@@ -58,9 +58,11 @@
         <project.groupName>frameworks</project.groupName>
 
         <!--testing-->
-        <testng.version>6.10</testng.version>
+        <testng.version>7.1.0</testng.version>
+        <!-- guava -->
+        <guava.version>28.1-jre</guava.version>
         <powermock.version>1.7.4</powermock.version>
-        <rest-assured.version>3.0.1</rest-assured.version>
+        <rest-assured.version>4.1.2</rest-assured.version>
         <skip.unit-tests>false</skip.unit-tests>
         <skip.integration-tests>true</skip.integration-tests>
         <!-- TODO: netty version should be same with the netty version in inside grpc-java -->
@@ -73,8 +75,8 @@
         <mybatis-plus.version>2.0.5</mybatis-plus.version>
 
         <!--logging-->
-        <slf4j.version>1.7.21</slf4j.version>
-        <lombok.version>1.16.12</lombok.version>
+        <slf4j.version>1.7.30</slf4j.version>
+        <lombok.version>1.18.10</lombok.version>
 
         <!--grpc-->
         <os.maven.plugin.version>1.4.1.Final</os.maven.plugin.version>
@@ -109,16 +111,15 @@
         <quartz.version>2.2.1</quartz.version>
 
         <!-- utils -->
-        <commons.io.version>2.4</commons.io.version>
-        <commons.beanutils.version>1.9.2</commons.beanutils.version>
-        <commons.lang.version>2.6</commons.lang.version>
-        <commons.lang3.version>3.4</commons.lang3.version>
-        <commons.net.version>3.3</commons.net.version>
-        <commons.codec.version>1.10</commons.codec.version>
-        <httpcomponents.httpmime.version>4.5.2</httpcomponents.httpmime.version>
-        <google.zxing.core.version>3.2.1</google.zxing.core.version>
-        <google.zxing.javase.version>3.2.1</google.zxing.javase.version>
-        <fastjson.version>1.2.47</fastjson.version>
+        <commons.io.version>2.6</commons.io.version>
+        <commons.beanutils.version>1.9.4</commons.beanutils.version>
+        <commons.lang3.version>3.9</commons.lang3.version>
+        <commons.net.version>3.6</commons.net.version>
+        <commons.codec.version>1.13</commons.codec.version>
+        <httpcomponents.httpmime.version>4.5.10</httpcomponents.httpmime.version>
+        <google.zxing.core.version>3.4.0</google.zxing.core.version>
+        <google.zxing.javase.version>3.4.0</google.zxing.javase.version>
+        <fastjson.version>1.2.62</fastjson.version>
 
     </properties>
 
@@ -149,24 +150,6 @@
             <groupId>org.powermock</groupId>
             <artifactId>powermock-api-mockito</artifactId>
             <version>${powermock.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-module-testng</artifactId>
-            <version>${powermock.version}</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.testng</groupId>
-                    <artifactId>testng</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>io.rest-assured</groupId>
-            <artifactId>rest-assured</artifactId>
-            <version>${rest-assured.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -238,6 +221,12 @@
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
             </dependency>
+            <!--guava-->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -283,12 +272,6 @@
                 <version>${slf4j.version}</version>
             </dependency>
 
-
-            <dependency>
-                <groupId>commons-lang</groupId>
-                <artifactId>commons-lang</artifactId>
-                <version>${commons.lang.version}</version>
-            </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>

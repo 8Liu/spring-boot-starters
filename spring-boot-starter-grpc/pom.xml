@@ -19,8 +19,6 @@
 
         <grpc.version>1.22.0</grpc.version>
         <protobuf.util.version>3.9.2</protobuf.util.version>
-        <!-- guava -->
-        <guava.version>28.1-jre</guava.version>
     </properties>
 
     <dependencies>
@@ -59,10 +57,10 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!--guava-->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
