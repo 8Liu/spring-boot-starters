@@ -74,7 +74,7 @@
         <dependency>
             <groupId>cn.com.siss.frameworks</groupId>
             <artifactId>common-constants</artifactId>
-            <version>1.0.0</version>
+            <version>${siss.common-constants.version}</version>
         </dependency>
 
 

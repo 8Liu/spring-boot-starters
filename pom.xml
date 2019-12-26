@@ -40,6 +40,9 @@
         <!-- module version -->
         <starters.version>0.0.7-SNAPSHOT</starters.version>
 
+        <!-- siss frameworks common constants version -->
+        <siss.common-constants.version>1.0.0-SNAPSHOT</siss.common-constants.version>
+
         <!--maven-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
