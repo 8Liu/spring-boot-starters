@@ -54,7 +54,7 @@ message ProcessDataRequest {
 /**
  *  基础返回对象
  */
-message Response {
+message ProtoResponse {
     /**
      *  返回编码
      */
