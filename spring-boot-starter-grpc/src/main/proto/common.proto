@@ -4,32 +4,94 @@ option java_package = "cn.com.siss.spring.boot.grpc.proto";
 
 option java_outer_classname = "CommonProto";
 
+/**
+ * 空请求参数
+ */
+message BaseEmptyRequest {
+}
+
+/**
+ * Long类型请求参数
+ */
 message BaseLongRequest {
     int64 data = 1;
 }
 
+/**
+ * Integer类型请求参数
+ */
 message BaseIntRequest {
     int32 data = 1;
 }
 
+/**
+ * String类型请求参数
+ */
 message BaseStrRequest {
     string strData = 1;
 }
 
-message BaseEmptyRequest {
+/**
+ * 商户业务数据处理请求参数
+ */
+message ProcessDataRequest {
+    /**
+     *  商户ID
+     */
+    int64 merchantId = 1;
+
+    /**
+     *  JSON格式的业务数据
+     */
+    string jsonData = 2;
+
+    /**
+     *  操作员
+     */
+    string operator = 3;
 }
 
+/**
+ *  基础返回对象
+ */
 message Response {
+    /**
+     *  返回编码
+     */
     int32 returnCode = 1;
+
+    /**
+     *  返回消息
+     */
     string message = 2;
+}
+
+/**
+ * 空返回对象
+ */
+message BaseEmptyResponse {
 }
 
 message BaseStrResponse {
     string strData = 1;
 }
 
+/**
+ *  JSON格式的业务数据返回对象
+ */
 message JSONDataResponse {
+    /**
+     *  返回编码
+     */
     int32 returnCode = 1;
+
+    /**
+     *  返回消息
+     */
     string message = 2;
+
+    /**
+     *  JSON格式的业务数据
+     */
     string jsonData = 3;
 }
