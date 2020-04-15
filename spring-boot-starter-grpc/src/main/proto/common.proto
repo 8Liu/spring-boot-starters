@@ -52,6 +52,12 @@ message ProcessDataRequest {
 }
 
 /**
+ * 空返回对象
+ */
+message EmptyResponse {
+}
+
+/**
  *  基础返回对象
  */
 message ProtoResponse {
@@ -64,12 +70,6 @@ message ProtoResponse {
      *  返回消息
      */
     string message = 2;
-}
-
-/**
- * 空返回对象
- */
-message BaseEmptyResponse {
 }
 
 message BaseStrResponse {
