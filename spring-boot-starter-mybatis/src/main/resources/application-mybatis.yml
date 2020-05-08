@@ -24,7 +24,7 @@ spring:
     # 空闲保持连接时间
     minEvictableIdleTimeMillis: 300000
     # 空闲时是否检测连接
-    testWhileIdle: false
+    testWhileIdle: true
     # 申请连接时检测连接(开启配置会降低性能)
     testOnBorrow: false
     # 归还连接时检测连接(开启配置会降低性能)
