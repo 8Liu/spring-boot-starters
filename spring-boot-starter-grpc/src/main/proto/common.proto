@@ -32,6 +32,51 @@ message BaseStrRequest {
 }
 
 /**
+ * Long类型商户数据请求参数
+ */
+message MerchantLongRequest {
+    /**
+     *  商户ID
+     */
+    int64 merchantId = 1;
+
+    /**
+     *  Long类型请求参数
+     */
+    int64 data = 2;
+}
+
+/**
+ * Integer类型商户数据请求参数
+ */
+message MerchantIntRequest {
+    /**
+     *  商户ID
+     */
+    int64 merchantId = 1;
+
+    /**
+     *  Integer类型请求参数
+     */
+    int32 data = 2;
+}
+
+/**
+ * String类型商户数据请求参数
+ */
+message MerchantStrRequest {
+    /**
+     *  商户ID
+     */
+    int64 merchantId = 1;
+
+    /**
+     *  String类型请求参数
+     */
+    string data = 2;
+}
+
+/**
  * 商户业务数据处理请求参数
  */
 message ProcessDataRequest {

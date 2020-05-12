@@ -88,6 +88,74 @@ public class GRpcCommonUtil {
     }
 
     /**
+     * 创建Long类型请求参数对象
+     *
+     * @param merchantId
+     * @param data
+     * @return
+     */
+    public static MerchantLongRequest createLongRequest(Long merchantId, Long data) {
+        if (null == merchantId || null == data) {
+            return null;
+        }
+        return MerchantLongRequest.newBuilder().setMerchantId(merchantId).setData(data).build();
+    }
+
+    /**
+     * 创建Integer类型请求参数对象
+     *
+     * @param data
+     * @return
+     */
+    public static MerchantIntRequest createIntRequest(Long merchantId, Integer data) {
+        if (null == merchantId || null == data) {
+            return null;
+        }
+        return MerchantIntRequest.newBuilder().setMerchantId(merchantId).setData(data).build();
+    }
+
+    /**
+     * 创建String类型请求参数对象
+     *
+     * @param data
+     * @return
+     */
+    public static MerchantStrRequest createSrtRequest(Long merchantId, String data) {
+        if (null == merchantId || StringUtils.isEmpty(data)) {
+            return null;
+        }
+        return MerchantStrRequest.newBuilder().setMerchantId(merchantId).setData(data).build();
+    }
+
+    /**
+     * 创建String类型请求参数对象
+     *
+     * @param dataInfo
+     * @return
+     */
+    public static <T> MerchantStrRequest createSrtRequest(Long merchantId, T dataInfo) {
+        if (null == merchantId || null == dataInfo) {
+            return null;
+        }
+        return MerchantStrRequest.newBuilder().setMerchantId(merchantId)
+                .setData(JSONObject.toJSONString(dataInfo)).build();
+    }
+
+    /**
+     * 创建String类型请求参数对象
+     *
+     * @param dataList
+     * @return
+     */
+    public static <T> MerchantStrRequest createSrtRequest(Long merchantId, List<T> dataList) {
+        if (null == merchantId || CollectionUtils.isEmpty(dataList)) {
+            return null;
+        }
+        return MerchantStrRequest.newBuilder().setMerchantId(merchantId)
+                .setData(JSONObject.toJSONString(dataList)).build();
+    }
+
+    /**
      * 创建商户业务数据处理请求参数Proto对象
      *
      * @param merchantId 商户编号
@@ -301,6 +369,38 @@ public class GRpcCommonUtil {
             return null;
         } else {
             return JSONObject.parseArray(request.getStrData(), clazz);
+        }
+    }
+
+    /**
+     * 从BaseStrRequest对象中获取数据对象信息
+     *
+     * @param request
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public static <T> T getDataFromRequest(MerchantStrRequest request, Class<T> clazz) {
+        if (null == request || StringUtils.isEmpty(request.getData())) {
+            return null;
+        } else {
+            return JSONObject.parseObject(request.getData(), clazz);
+        }
+    }
+
+    /**
+     * 从BaseStrRequest对象中获取数据对象信息表表
+     *
+     * @param request
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> getDataListFromRequest(MerchantStrRequest request, Class<T> clazz) {
+        if (null == request || StringUtils.isEmpty(request.getData())) {
+            return null;
+        } else {
+            return JSONObject.parseArray(request.getData(), clazz);
         }
     }
 
