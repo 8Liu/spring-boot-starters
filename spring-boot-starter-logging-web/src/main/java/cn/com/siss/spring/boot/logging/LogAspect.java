@@ -123,7 +123,7 @@ public class LogAspect {
             ThreadMdcUtil.setTraceId(logTraceId);
         }
         // 添加日志打印
-        log.info("CLASS_METHOD : {}.{}()\n with argument[s] = {}",
+        log.debug("CLASS_METHOD : {}.{}()\n with argument[s] = {}",
                 joinPoint.getSignature().getDeclaringTypeName(),
                 joinPoint.getSignature().getName(),
                 Arrays.toString(joinPoint.getArgs()));
@@ -172,9 +172,9 @@ public class LogAspect {
             // 处理完请求，返回内容
             if (null != returnValue) {
                 if (returnValue instanceof String) {
-                    log.info("RESPONSE : {}", returnValue);
+                    log.debug("RESPONSE : {}", returnValue);
                 } else {
-                    log.info("RESPONSE : {}", JSONObject.toJSONString(returnValue));
+                    log.debug("RESPONSE : {}", JSONObject.toJSONString(returnValue));
                 }
             }
             // 清除MDC的logTraceId
@@ -231,10 +231,20 @@ public class LogAspect {
         // 获取执行结束的时间
         long endTime = System.currentTimeMillis();
         // 打印耗时的信息
-        log.info("CLASS_METHOD : {}.{}() 处理请求共耗时: {} ms",
-                joinPoint.getSignature().getDeclaringTypeName(),
-                joinPoint.getSignature().getName(),
-                endTime - startTime);
+        long diffTime = endTime - startTime;
+        if (diffTime > 3000L) {
+            log.warn("CLASS_METHOD : {}.{}() 处理请求共耗时: {} ms",
+                    joinPoint.getSignature().getDeclaringTypeName(),
+                    joinPoint.getSignature().getName(), diffTime);
+        } else if (diffTime > 500L) {
+            log.info("CLASS_METHOD : {}.{}() 处理请求共耗时: {} ms",
+                    joinPoint.getSignature().getDeclaringTypeName(),
+                    joinPoint.getSignature().getName(), diffTime);
+        } else {
+            log.debug("CLASS_METHOD : {}.{}() 处理请求共耗时: {} ms",
+                    joinPoint.getSignature().getDeclaringTypeName(),
+                    joinPoint.getSignature().getName(), diffTime);
+        }
         return obj;
     }
 
