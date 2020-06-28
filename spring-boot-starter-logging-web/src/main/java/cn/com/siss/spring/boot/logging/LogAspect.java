@@ -126,7 +126,7 @@ public class LogAspect {
         log.debug("CLASS_METHOD : {}.{}()\n with argument[s] = {}",
                 joinPoint.getSignature().getDeclaringTypeName(),
                 joinPoint.getSignature().getName(),
-                Arrays.toString(joinPoint.getArgs()));
+                JSONObject.toJSONString(joinPoint.getArgs()));
     }
 
     /**
