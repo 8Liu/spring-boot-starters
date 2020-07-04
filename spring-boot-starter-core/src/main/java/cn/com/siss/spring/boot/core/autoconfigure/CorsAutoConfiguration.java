@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 
 
 @Configuration
-@ConditionalOnProperty(prefix = "cors", name = "enabled", havingValue = "true")
 @EnableConfigurationProperties({CorsProperties.class})
+@ConditionalOnProperty(prefix = "cors", name = "enabled", havingValue = "true")
 public class CorsAutoConfiguration {
 
     @Bean

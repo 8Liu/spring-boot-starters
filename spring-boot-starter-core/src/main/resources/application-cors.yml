@@ -1,6 +1,14 @@
 
 cors:
   enabled: true
-  mappings: /**
+  mappings: "/**"
+  # 所有支持域的集合, 注意域名末尾不需要加斜杠
   allowedOrigins: "*"
+  # 支持的请求方法
+  allowedMethods: "DELETE, GET, OPTIONS, POST, PUT"
+  # 允许的请求头header, 非简单请求(not-so-simple request)的消息头;
+  # 组件已增加了简单请求(simple request)消息头"Accept,Accept-Language,Content-Language,Last-Event-ID,Content-Type,logTraceId"
+  allowedHeaders: "authorization"
+  allowCredentials: true
+  maxAge: 3600
 
