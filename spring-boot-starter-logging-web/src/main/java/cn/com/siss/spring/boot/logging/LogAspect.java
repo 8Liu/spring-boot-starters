@@ -13,8 +13,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
 
 @Slf4j
 @Aspect
@@ -123,10 +124,49 @@ public class LogAspect {
             ThreadMdcUtil.setTraceId(logTraceId);
         }
         // 添加日志打印
-        log.debug("CLASS_METHOD : {}.{}()\n with argument[s] = {}",
-                joinPoint.getSignature().getDeclaringTypeName(),
-                joinPoint.getSignature().getName(),
-                JSONObject.toJSONString(joinPoint.getArgs()));
+        if (log.isDebugEnabled()) {
+            log.debug("CLASS_METHOD : {}.{}()\n with argument[s] = {}",
+                    joinPoint.getSignature().getDeclaringTypeName(),
+                    joinPoint.getSignature().getName(),
+                    toJsonString(joinPoint.getArgs()));
+        }
+    }
+
+    /**
+     * 参数对象转为JSON字符串
+     *
+     * @param args
+     * @return
+     */
+    private static String toJsonString(Object... args) {
+        StringBuilder jsonString = new StringBuilder();
+        if (null == args || args.length == 0) {
+            jsonString.append("[]");
+            return jsonString.toString();
+        }
+
+        jsonString.append("[");
+        for (int i = 0; i < args.length; i++) {
+            Object arg = args[i];
+            if (i == 0) {
+                jsonString.append("argument" + i + " : ");
+            } else {
+                jsonString.append(", argument" + i + " : ");
+            }
+            if (null == arg) {
+                jsonString.append("null");
+            } else {
+                // 判断参数对象类型是否为接口或基本类型
+                if (arg.getClass().isPrimitive() || arg instanceof ServletRequest
+                        || arg instanceof ServletResponse) {
+                    jsonString.append(arg.toString());
+                } else {
+                    jsonString.append(JSONObject.toJSONString(arg));
+                }
+            }
+        }
+        jsonString.append("]");
+        return jsonString.toString();
     }
 
     /**
@@ -170,7 +210,7 @@ public class LogAspect {
     private void doAfterReturning(JoinPoint joinPoint, Object returnValue) {
         try {
             // 处理完请求，返回内容
-            if (null != returnValue) {
+            if (null != returnValue && log.isDebugEnabled()) {
                 if (returnValue instanceof String) {
                     log.debug("RESPONSE : {}", returnValue);
                 } else {
@@ -232,15 +272,15 @@ public class LogAspect {
         long endTime = System.currentTimeMillis();
         // 打印耗时的信息
         long diffTime = endTime - startTime;
-        if (diffTime > 3000L) {
+        if (diffTime > 3000L && log.isWarnEnabled()) {
             log.warn("CLASS_METHOD : {}.{}() 处理请求共耗时: {} ms",
                     joinPoint.getSignature().getDeclaringTypeName(),
                     joinPoint.getSignature().getName(), diffTime);
-        } else if (diffTime > 500L) {
+        } else if (diffTime > 500L && log.isInfoEnabled()) {
             log.info("CLASS_METHOD : {}.{}() 处理请求共耗时: {} ms",
                     joinPoint.getSignature().getDeclaringTypeName(),
                     joinPoint.getSignature().getName(), diffTime);
-        } else {
+        } else if (log.isDebugEnabled()) {
             log.debug("CLASS_METHOD : {}.{}() 处理请求共耗时: {} ms",
                     joinPoint.getSignature().getDeclaringTypeName(),
                     joinPoint.getSignature().getName(), diffTime);
