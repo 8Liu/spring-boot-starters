@@ -50,7 +50,7 @@
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
         <maven-shade-plugin.version>2.3</maven-shade-plugin.version>
         <maven-surefire-plugin.version>2.18.1</maven-surefire-plugin.version>
-        <maven-archetype.version>2.4</maven-archetype.version>
+        <maven-archetype.version>3.0.0</maven-archetype.version>
 
         <!--docker-->
         <docker.registryUrl>registry.cn-shenzhen.aliyuncs.com</docker.registryUrl>
@@ -80,10 +80,6 @@
         <!--logging-->
         <slf4j.version>1.7.30</slf4j.version>
         <lombok.version>1.18.10</lombok.version>
-
-        <!--grpc-->
-        <os.maven.plugin.version>1.4.1.Final</os.maven.plugin.version>
-        <protobuf.maven.plugin.version>0.5.0</protobuf.maven.plugin.version>
 
         <!--cache-->
         <hazelcast.version>3.8.3</hazelcast.version>
@@ -439,14 +435,6 @@
             </testResource>
         </testResources>
 
-        <extensions>
-            <extension>
-                <groupId>kr.motd.maven</groupId>
-                <artifactId>os-maven-plugin</artifactId>
-                <version>${os.maven.plugin.version}</version>
-            </extension>
-        </extensions>
-
         <pluginManagement>
             <!-- NOTE: These plugins will be removed from future versions of the super POM -->
             <!-- They are kept for the moment as they are very unlikely to conflict with lifecycle mappings (MNG-4453) -->
@@ -474,31 +462,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-archetype-plugin</artifactId>
                     <version>${maven-archetype.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.xolstice.maven.plugins</groupId>
-                    <artifactId>protobuf-maven-plugin</artifactId>
-                    <version>${protobuf.maven.plugin.version}</version>
-                    <configuration>
-                        <!--
-                          The version of protoc must match protobuf-java. If you don't depend on
-                          protobuf-java directly, you will be transitively depending on the
-                          protobuf-java version that grpc depends on.
-                        -->
-                        <protocArtifact>com.google.protobuf:protoc:3.1.0-build2:exe:${os.detected.classifier}
-                        </protocArtifact>
-                        <pluginId>grpc-java</pluginId>
-                        <pluginArtifact>io.grpc:protoc-gen-grpc-java:1.0.0:exe:${os.detected.classifier}
-                        </pluginArtifact>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>compile</goal>
-                                <goal>compile-custom</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>

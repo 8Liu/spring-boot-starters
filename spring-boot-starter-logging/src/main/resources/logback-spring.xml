@@ -10,18 +10,20 @@
                     defaultValue="%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %green(%logger{64})  - %msg%n"/>
 
     <!-- ConsoleAppender, 将日志输出到控制台 . 有encoder和target两个子节点(新版本有filter子节点) -->
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <!-- 子节点encoder , 指定日志输出的格式 , 具体格式配置见下方表格 -->
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
             <pattern>${LOG_PATTERN}</pattern>
+            <!-- 设置字符集 -->
+            <charset>UTF-8</charset>
         </encoder>
         <!-- 子节点target, 日志输出的对象 System.out 或 System.err -->
         <!--<target></target>-->
     </appender>
 
-    <!-- 滚动将日志输出到切分的日志文件 -->
-    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!-- 文件输出, 滚动将日志输出到切分的日志文件 -->
+    <appender name="ROLLING_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- 按照每天与文件大小切分生成日志文件 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- 日志文件输出的文件名 -->
@@ -36,6 +38,8 @@
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <!-- 格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
             <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{64}) - %msg%n</pattern>
+            <!-- 设置字符集 -->
+            <charset>UTF-8</charset>
         </encoder>
         <!--日志文件最大的大小 -->
         <!--<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
@@ -70,8 +74,8 @@
 
     <!-- root也是logger元素, 它是根logger, 只有一个level属性-->
     <root level="INFO">
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="FILE"/>
+        <appender-ref ref="CONSOLE"/>
+        <!--<appender-ref ref="ROLLING_FILE"/>-->
         <appender-ref ref="GELF"/>
     </root>
 
@@ -80,6 +84,6 @@
     <!--      level：用来设置输出级别 -->
     <!-- additivity：是否向上级logger传递打印信息, 默认是true -->
     <!--<logger name="cn.takujo.common" level="INFO" additivity="false">-->
-    <!--<appender-ref ref="STDOUT"/>-->
+    <!--<appender-ref ref="CONSOLE"/>-->
     <!--</logger>-->
 </configuration>
