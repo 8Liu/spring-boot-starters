@@ -5,4 +5,5 @@ logging:
     cn.com.siss: warn
   config: classpath:logback-spring.xml
   pattern:
-    console: '%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %green(%logger{64})  - %msg%n'
+    console: "%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %green(%logger{64})  - %msg%n"
+    file: "%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{64}) - %msg%n"

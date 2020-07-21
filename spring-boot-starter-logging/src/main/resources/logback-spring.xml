@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true">
-    <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径 -->
-    <!--<property name="LOG_HOME" value="logs" />-->
+    <!-- 日志文件名 -->
     <springProperty scope="context" name="LOG_NAME" source="logging.name" defaultValue="application"/>
-    <springProperty scope="context" name="LOG_HOME" source="logging.path" defaultValue="logs"/>
+    <!--定义日志文件的存储地址, 勿在正式环境 logging.path 的配置中使用相对路径 -->
+    <springProperty scope="context" name="LOG_PATH" source="logging.path" defaultValue="logs"/>
+    <!-- GELF日志系统IP地址 -->
     <springProperty scope="context" name="GELF_HOST" source="logging.gelf.host" defaultValue="128.0.255.104"/>
+    <!-- GELF日志系统端口, 默认12201 -->
     <springProperty scope="context" name="GELF_PORT" source="logging.gelf.port" defaultValue="12201"/>
-    <springProperty scope="context" name="LOG_PATTERN" source="logging.pattern.console"
+    <!-- 格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+    <springProperty scope="context" name="LOG_PATTERN_CONSOLE" source="logging.pattern.console"
                     defaultValue="%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %green(%logger{64})  - %msg%n"/>
+    <springProperty scope="context" name="LOG_PATTERN_FILE" source="logging.pattern.file"
+                    defaultValue="%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{64}) - %msg%n"/>
 
     <!-- ConsoleAppender, 将日志输出到控制台 . 有encoder和target两个子节点(新版本有filter子节点) -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <!-- 子节点encoder , 指定日志输出的格式 , 具体格式配置见下方表格 -->
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
-            <pattern>${LOG_PATTERN}</pattern>
+            <pattern>${LOG_PATTERN_CONSOLE}</pattern>
             <!-- 设置字符集 -->
             <charset>UTF-8</charset>
         </encoder>
@@ -27,7 +32,7 @@
         <!-- 按照每天与文件大小切分生成日志文件 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- 日志文件输出的文件名 -->
-            <FileNamePattern>${LOG_HOME}/${LOG_NAME}-%d{yyyyMMdd}-%i.log.gz</FileNamePattern>
+            <FileNamePattern>${LOG_PATH}/${LOG_NAME}-%d{yyyyMMdd}-%i.log.gz</FileNamePattern>
             <!-- 日志文件保留天数 -->
             <MaxHistory>7</MaxHistory>
             <!-- 日志文件最大的大小 -->
@@ -37,14 +42,10 @@
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <!-- 格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
-            <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{64}) - %msg%n</pattern>
+            <pattern>${LOG_PATTERN_FILE}</pattern>
             <!-- 设置字符集 -->
             <charset>UTF-8</charset>
         </encoder>
-        <!--日志文件最大的大小 -->
-        <!--<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <MaxFileSize>10MB</MaxFileSize>
-        </triggeringPolicy>-->
     </appender>
 
     <!-- 输出GELF日志 -->
@@ -73,11 +74,11 @@
     </appender>
 
     <!-- root也是logger元素, 它是根logger, 只有一个level属性-->
-    <root level="INFO">
+    <!--<root level="INFO">
         <appender-ref ref="CONSOLE"/>
-        <!--<appender-ref ref="ROLLING_FILE"/>-->
+        <appender-ref ref="ROLLING_FILE"/>
         <appender-ref ref="GELF"/>
-    </root>
+    </root>-->
 
     <!-- logger是用来设置某个包或者具体的某个类的日志输出级别, 以及制定的appender -->
     <!--       name：用来指定此logger约束的某一个包或者具体的某一个类 -->
@@ -86,4 +87,26 @@
     <!--<logger name="cn.takujo.common" level="INFO" additivity="false">-->
     <!--<appender-ref ref="CONSOLE"/>-->
     <!--</logger>-->
+
+    <!-- 研发人员个人本地环境. -->
+    <springProfile name="local">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <!-- 输出日志文件 -->
+            <appender-ref ref="ROLLING_FILE"/>
+        </root>
+    </springProfile>
+    <!-- 开发环境. -->
+    <springProfile name="dev">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+    <!-- 测试环境 + 生产环境. 多个使用逗号隔开. -->
+    <springProfile name="test,prod">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="GELF"/>
+        </root>
+    </springProfile>
 </configuration>
