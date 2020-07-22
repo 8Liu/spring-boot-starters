@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true">
+    <!-- 使用application.yml 传递参数，不能使用logback 自带的<property>标签 -->
     <!-- 日志文件名 -->
     <springProperty scope="context" name="LOG_NAME" source="logging.name" defaultValue="application"/>
     <!--定义日志文件的存储地址, 勿在正式环境 logging.path 的配置中使用相对路径 -->
@@ -34,11 +35,11 @@
             <!-- 日志文件输出的文件名 -->
             <FileNamePattern>${LOG_PATH}/${LOG_NAME}-%d{yyyyMMdd}-%i.log.gz</FileNamePattern>
             <!-- 日志文件保留天数 -->
-            <MaxHistory>7</MaxHistory>
+            <MaxHistory>3</MaxHistory>
             <!-- 日志文件最大的大小 -->
             <MaxFileSize>100MB</MaxFileSize>
             <!-- 子节点totalSizeCap日志文件上限, 超过后会删除旧的归档日志文件(在1.1.6版本后才开始支持) -->
-            <totalSizeCap>2GB</totalSizeCap>
+            <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <!-- 格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
@@ -93,7 +94,7 @@
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
             <!-- 输出日志文件 -->
-            <appender-ref ref="ROLLING_FILE"/>
+            <!--<appender-ref ref="ROLLING_FILE"/>-->
         </root>
     </springProfile>
     <!-- 开发环境. -->
