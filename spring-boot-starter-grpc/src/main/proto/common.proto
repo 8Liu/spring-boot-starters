@@ -140,3 +140,38 @@ message JSONDataResponse {
      */
     string jsonData = 3;
 }
+
+/**
+ *  JSON格式的业务数据返回对象
+ */
+message PageResponse {
+    /**
+     *  返回编码
+     */
+    int32 returnCode = 1;
+
+    /**
+     *  返回消息
+     */
+    string message = 2;
+
+    /**
+     *  JSON格式的数据列表
+     */
+    string records = 3;
+
+    /**
+     *  总记录数
+     */
+    int32 total = 4;
+
+    /**
+     *  每页查询记录数
+     */
+    int32 size = 5;
+
+    /**
+     *  当前页码
+     */
+    int32 current = 6;
+}
