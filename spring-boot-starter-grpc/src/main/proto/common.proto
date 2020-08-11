@@ -144,7 +144,7 @@ message JSONDataResponse {
 /**
  *  JSON格式的业务数据返回对象
  */
-message PageResponse {
+message PageDataResponse {
     /**
      *  返回编码
      */

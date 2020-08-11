@@ -341,6 +341,49 @@ public class GRpcCommonUtil {
     }
 
     /**
+     * 创建PageResponse基础返回对象
+     *
+     * @param returnCode 返回编码
+     * @param dataList   数据列表
+     * @param total      总记录数
+     * @param size       每页记录数
+     * @param current    当前页码
+     * @param message    返回消息
+     * @return
+     */
+    public static <T> PageDataResponse createDataResponse(Integer returnCode,
+                                                      List<T> dataList,
+                                                      Integer total,
+                                                      Integer size,
+                                                      Integer current,
+                                                      String message) {
+        String jsonData = null;
+        if (!CollectionUtils.isEmpty(dataList)) {
+            jsonData = JSONObject.toJSONString(dataList);
+        }
+        PageDataResponse.Builder builder = PageDataResponse.newBuilder();
+        if (null != returnCode) {
+            builder.setReturnCode(returnCode);
+        }
+        if (!StringUtils.isEmpty(message)) {
+            builder.setMessage(message);
+        }
+        if (!StringUtils.isEmpty(jsonData)) {
+            builder.setRecords(jsonData);
+        }
+        if (null != total) {
+            builder.setTotal(total);
+        }
+        if (null != size) {
+            builder.setSize(size);
+        }
+        if (null != current) {
+            builder.setSize(current);
+        }
+        return builder.build();
+    }
+
+    /**
      * 从BaseStrRequest对象中获取数据对象信息
      *
      * @param request
@@ -499,6 +542,23 @@ public class GRpcCommonUtil {
             return null;
         } else {
             return JSONObject.parseArray(response.getJsonData(), clazz);
+        }
+    }
+
+    /**
+     * 从PageResponse对象中获取数据对象信息表表
+     *
+     * @param response
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> getDataListFromResponse(PageDataResponse response, Class<T> clazz) {
+        if (null == response || !ReturnCodeConstant.CODE_1000.equals(response.getReturnCode())
+                || StringUtils.isEmpty(response.getRecords())) {
+            return null;
+        } else {
+            return JSONObject.parseArray(response.getRecords(), clazz);
         }
     }
 

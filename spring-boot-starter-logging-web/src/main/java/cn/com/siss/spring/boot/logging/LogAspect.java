@@ -125,10 +125,9 @@ public class LogAspect {
         }
         // 添加日志打印
         if (log.isDebugEnabled()) {
-            log.debug("CLASS_METHOD : {}.{}()\n with argument[s] = {}",
+            log.debug("CLASS_METHOD : {}.{}()",
                     joinPoint.getSignature().getDeclaringTypeName(),
-                    joinPoint.getSignature().getName(),
-                    toJsonString(joinPoint.getArgs()));
+                    joinPoint.getSignature().getName());
         }
     }
 
@@ -139,34 +138,38 @@ public class LogAspect {
      * @return
      */
     private static String toJsonString(Object... args) {
-        StringBuilder jsonString = new StringBuilder();
-        if (null == args || args.length == 0) {
-            jsonString.append("[]");
-            return jsonString.toString();
-        }
-
-        jsonString.append("[");
-        for (int i = 0; i < args.length; i++) {
-            Object arg = args[i];
-            if (i == 0) {
-                jsonString.append("argument" + i + " : ");
-            } else {
-                jsonString.append(", argument" + i + " : ");
+        try {
+            StringBuilder jsonString = new StringBuilder();
+            if (null == args || args.length == 0) {
+                jsonString.append("[]");
+                return jsonString.toString();
             }
-            if (null == arg) {
-                jsonString.append("null");
-            } else {
-                // 判断参数对象类型是否为接口或基本类型
-                if (arg.getClass().isPrimitive() || arg instanceof ServletRequest
-                        || arg instanceof ServletResponse) {
-                    jsonString.append(arg.toString());
+
+            jsonString.append("[");
+            for (int i = 0; i < args.length; i++) {
+                Object arg = args[i];
+                if (i == 0) {
+                    jsonString.append("argument" + i + " : ");
                 } else {
-                    jsonString.append(JSONObject.toJSONString(arg));
+                    jsonString.append(", argument" + i + " : ");
+                }
+                if (null == arg) {
+                    jsonString.append("null");
+                } else {
+                    // 判断参数对象类型是否为接口或基本类型
+                    if (arg.getClass().isPrimitive() || arg instanceof ServletRequest
+                            || arg instanceof ServletResponse) {
+                        jsonString.append(arg.toString());
+                    } else {
+                        jsonString.append(JSONObject.toJSONString(arg));
+                    }
                 }
             }
+            jsonString.append("]");
+            return jsonString.toString();
+        } catch (Exception e) {
+            return "argument toJsonString method error";
         }
-        jsonString.append("]");
-        return jsonString.toString();
     }
 
     /**
@@ -273,17 +276,20 @@ public class LogAspect {
         // 打印耗时的信息
         long diffTime = endTime - startTime;
         if (diffTime > 3000L && log.isWarnEnabled()) {
-            log.warn("CLASS_METHOD : {}.{}() ,请求参数{},处理请求共耗时: {} ms",
+            log.warn("CLASS_METHOD : {}.{}() 处理请求共耗时: {} ms \n with argument[s] = {}",
                     joinPoint.getSignature().getDeclaringTypeName(),
-                    joinPoint.getSignature().getName(),toJsonString(joinPoint.getArgs()),diffTime);
+                    joinPoint.getSignature().getName(), diffTime,
+                    toJsonString(joinPoint.getArgs()));
         } else if (diffTime > 500L && log.isInfoEnabled()) {
-            log.info("CLASS_METHOD : {}.{}() 处理请求共耗时: {} ms",
+            log.info("CLASS_METHOD : {}.{}() 处理请求共耗时: {} ms \n with argument[s] = {}",
                     joinPoint.getSignature().getDeclaringTypeName(),
-                    joinPoint.getSignature().getName(), diffTime);
+                    joinPoint.getSignature().getName(), diffTime,
+                    toJsonString(joinPoint.getArgs()));
         } else if (log.isDebugEnabled()) {
-            log.debug("CLASS_METHOD : {}.{}() 处理请求共耗时: {} ms",
+            log.debug("CLASS_METHOD : {}.{}() 处理请求共耗时: {} ms \n with argument[s] = {}",
                     joinPoint.getSignature().getDeclaringTypeName(),
-                    joinPoint.getSignature().getName(), diffTime);
+                    joinPoint.getSignature().getName(), diffTime,
+                    toJsonString(joinPoint.getArgs()));
         }
         return obj;
     }
