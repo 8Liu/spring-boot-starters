@@ -273,9 +273,9 @@ public class LogAspect {
         // 打印耗时的信息
         long diffTime = endTime - startTime;
         if (diffTime > 3000L && log.isWarnEnabled()) {
-            log.warn("CLASS_METHOD : {}.{}() 处理请求共耗时: {} ms",
+            log.warn("CLASS_METHOD : {}.{}() ,请求参数{},处理请求共耗时: {} ms",
                     joinPoint.getSignature().getDeclaringTypeName(),
-                    joinPoint.getSignature().getName(), diffTime);
+                    joinPoint.getSignature().getName(),toJsonString(joinPoint.getArgs()),diffTime);
         } else if (diffTime > 500L && log.isInfoEnabled()) {
             log.info("CLASS_METHOD : {}.{}() 处理请求共耗时: {} ms",
                     joinPoint.getSignature().getDeclaringTypeName(),
