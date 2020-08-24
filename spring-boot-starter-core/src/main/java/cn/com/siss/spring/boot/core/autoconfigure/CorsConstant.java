@@ -12,5 +12,5 @@ public class CorsConstant {
 
     public final static long DEFAULT_MAX_AGE = 1800;
 
-    public final static String SIMPLE_ALLOWED_HEADERS = "*,Accept,Accept-Language,Content-Language,Last-Event-ID,Content-Type";
+    public final static String SIMPLE_ALLOWED_HEADERS = "*,Accept,Accept-Language,Accept-Encoding,Content-Language,Last-Event-ID,Content-Type";
 }

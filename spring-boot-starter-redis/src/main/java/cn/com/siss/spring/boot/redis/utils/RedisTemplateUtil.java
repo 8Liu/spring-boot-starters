@@ -18,16 +18,12 @@ public class RedisTemplateUtil {
      * @param value
      * @return
      */
-    public static boolean set(RedisTemplate redisTemplate, final String key, Object value) {
-        boolean result = false;
-        try {
-            ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
-            operations.set(key, value);
-            result = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
+    public static boolean set(RedisTemplate redisTemplate,
+                              final String key,
+                              Object value) {
+        ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
+        operations.set(key, value);
+        return true;
     }
 
     /**
@@ -35,19 +31,17 @@ public class RedisTemplateUtil {
      *
      * @param key
      * @param value
+     * @param expireTime 有效时间(秒)
      * @return
      */
-    public static boolean set(RedisTemplate redisTemplate, final String key, Object value, Long expireTime) {
-        boolean result = false;
-        try {
-            ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
-            operations.set(key, value);
-            redisTemplate.expire(key, expireTime, TimeUnit.SECONDS);
-            result = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
+    public static boolean set(RedisTemplate redisTemplate,
+                              final String key,
+                              Object value,
+                              Long expireTime) {
+        ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
+        operations.set(key, value);
+        redisTemplate.expire(key, expireTime, TimeUnit.SECONDS);
+        return true;
     }
 
     /**
