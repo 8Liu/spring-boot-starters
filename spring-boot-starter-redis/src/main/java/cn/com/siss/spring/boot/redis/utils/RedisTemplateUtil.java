@@ -21,8 +21,8 @@ public class RedisTemplateUtil {
     public static boolean set(RedisTemplate redisTemplate,
                               final String key,
                               Object value) {
-        ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
-        operations.set(key, value);
+        BoundValueOperations<Serializable, Object> operations = redisTemplate.boundValueOps(key);
+        operations.set(value);
         return true;
     }
 
@@ -38,9 +38,8 @@ public class RedisTemplateUtil {
                               final String key,
                               Object value,
                               Long expireTime) {
-        ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
-        operations.set(key, value);
-        redisTemplate.expire(key, expireTime, TimeUnit.SECONDS);
+        BoundValueOperations<Serializable, Object> operations = redisTemplate.boundValueOps(key);
+        operations.set(value, expireTime, TimeUnit.SECONDS);
         return true;
     }
 
@@ -96,10 +95,8 @@ public class RedisTemplateUtil {
      * @return
      */
     public static Object get(RedisTemplate redisTemplate, final String key) {
-        Object result = null;
-        ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
-        result = operations.get(key);
-        return result;
+        BoundValueOperations<Serializable, Object> operations = redisTemplate.boundValueOps(key);
+        return operations.get();
     }
 
     /**
@@ -110,8 +107,8 @@ public class RedisTemplateUtil {
      * @param value
      */
     public static void hmSet(RedisTemplate redisTemplate, String key, Object hashKey, Object value) {
-        HashOperations<String, Object, Object> hash = redisTemplate.opsForHash();
-        hash.put(key, hashKey, value);
+        BoundHashOperations<String, Object, Object> hash = redisTemplate.boundHashOps(key);
+        hash.put(hashKey, value);
     }
 
     /**
@@ -122,32 +119,32 @@ public class RedisTemplateUtil {
      * @return
      */
     public static Object hmGet(RedisTemplate redisTemplate, String key, Object hashKey) {
-        HashOperations<String, Object, Object> hash = redisTemplate.opsForHash();
-        return hash.get(key, hashKey);
+        BoundHashOperations<String, Object, Object> hash = redisTemplate.boundHashOps(key);
+        return hash.get(hashKey);
     }
 
     /**
      * 列表添加
      *
-     * @param k
-     * @param v
+     * @param key
+     * @param value
      */
-    public static void lPush(RedisTemplate redisTemplate, String k, Object v) {
-        ListOperations<String, Object> list = redisTemplate.opsForList();
-        list.rightPush(k, v);
+    public static void lPush(RedisTemplate redisTemplate, String key, Object value) {
+        BoundListOperations<String, Object> list = redisTemplate.boundListOps(key);
+        list.rightPush(value);
     }
 
     /**
      * 列表获取
      *
-     * @param k
-     * @param l
-     * @param l1
+     * @param key
+     * @param start
+     * @param end
      * @return
      */
-    public static List<Object> lRange(RedisTemplate redisTemplate, String k, long l, long l1) {
-        ListOperations<String, Object> list = redisTemplate.opsForList();
-        return list.range(k, l, l1);
+    public static List<Object> lRange(RedisTemplate redisTemplate, String key, long start, long end) {
+        BoundListOperations<String, Object> list = redisTemplate.boundListOps(key);
+        return list.range(start, end);
     }
 
     /**
@@ -157,8 +154,8 @@ public class RedisTemplateUtil {
      * @param value
      */
     public static Long add(RedisTemplate redisTemplate, String key, Object value) {
-        SetOperations<String, Object> set = redisTemplate.opsForSet();
-        Long flag = set.add(key, value);
+        BoundSetOperations<String, Object> set = redisTemplate.boundSetOps(key);
+        Long flag = set.add(value);
         return flag;
     }
 
@@ -169,8 +166,8 @@ public class RedisTemplateUtil {
      * @return
      */
     public static Set<Object> setMembers(RedisTemplate redisTemplate, String key) {
-        SetOperations<String, Object> set = redisTemplate.opsForSet();
-        return set.members(key);
+        BoundSetOperations<String, Object> set = redisTemplate.boundSetOps(key);
+        return set.members();
     }
 
     /**
@@ -181,8 +178,8 @@ public class RedisTemplateUtil {
      * @param scoure
      */
     public static Boolean zAdd(RedisTemplate redisTemplate, String key, Object value, double scoure) {
-        ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
-        Boolean flag = zset.add(key, value, scoure);
+        BoundZSetOperations<String, Object> zset = redisTemplate.boundZSetOps(key);
+        Boolean flag = zset.add(value, scoure);
         return flag;
     }
 
@@ -195,8 +192,8 @@ public class RedisTemplateUtil {
      * @return
      */
     public static Set<Object> rangeByScore(RedisTemplate redisTemplate, String key, double scoure, double scoure1) {
-        ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
-        return zset.rangeByScore(key, scoure, scoure1);
+        BoundZSetOperations<String, Object> zset = redisTemplate.boundZSetOps(key);
+        return zset.rangeByScore(scoure, scoure1);
     }
 
     /**
