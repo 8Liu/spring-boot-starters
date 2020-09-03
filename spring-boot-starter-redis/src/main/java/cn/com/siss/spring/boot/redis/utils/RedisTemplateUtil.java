@@ -3,8 +3,10 @@ package cn.com.siss.spring.boot.redis.utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;
+import org.springframework.util.CollectionUtils;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -18,10 +20,10 @@ public class RedisTemplateUtil {
      * @param value
      * @return
      */
-    public static boolean set(RedisTemplate redisTemplate,
-                              final String key,
-                              Object value) {
-        BoundValueOperations<Serializable, Object> operations = redisTemplate.boundValueOps(key);
+    public static <T> boolean set(RedisTemplate redisTemplate,
+                                  final String key,
+                                  T value) {
+        BoundValueOperations<Serializable, T> operations = redisTemplate.boundValueOps(key);
         operations.set(value);
         return true;
     }
@@ -34,11 +36,11 @@ public class RedisTemplateUtil {
      * @param expireTime 有效时间(秒)
      * @return
      */
-    public static boolean set(RedisTemplate redisTemplate,
-                              final String key,
-                              Object value,
-                              Long expireTime) {
-        BoundValueOperations<Serializable, Object> operations = redisTemplate.boundValueOps(key);
+    public static <T> boolean set(RedisTemplate redisTemplate,
+                                  final String key,
+                                  T value,
+                                  Long expireTime) {
+        BoundValueOperations<Serializable, T> operations = redisTemplate.boundValueOps(key);
         operations.set(value, expireTime, TimeUnit.SECONDS);
         return true;
     }
@@ -61,8 +63,9 @@ public class RedisTemplateUtil {
      */
     public static void removePattern(RedisTemplate redisTemplate, final String pattern) {
         Set<Serializable> keys = redisTemplate.keys(pattern);
-        if (keys.size() > 0)
+        if (keys.size() > 0) {
             redisTemplate.delete(keys);
+        }
     }
 
     /**
@@ -74,6 +77,7 @@ public class RedisTemplateUtil {
         Boolean flag = false;
         if (exists(redisTemplate, key)) {
             redisTemplate.delete(key);
+            flag = true;
         }
         return flag;
     }
@@ -94,8 +98,8 @@ public class RedisTemplateUtil {
      * @param key
      * @return
      */
-    public static Object get(RedisTemplate redisTemplate, final String key) {
-        BoundValueOperations<Serializable, Object> operations = redisTemplate.boundValueOps(key);
+    public static <T> T get(RedisTemplate redisTemplate, final String key) {
+        BoundValueOperations<Serializable, T> operations = redisTemplate.boundValueOps(key);
         return operations.get();
     }
 
@@ -106,8 +110,11 @@ public class RedisTemplateUtil {
      * @param hashKey
      * @param value
      */
-    public static void hmSet(RedisTemplate redisTemplate, String key, Object hashKey, Object value) {
-        BoundHashOperations<String, Object, Object> hash = redisTemplate.boundHashOps(key);
+    public static <HK, HV> void hmSet(RedisTemplate redisTemplate,
+                                      String key,
+                                      HK hashKey,
+                                      HV value) {
+        BoundHashOperations<String, HK, HV> hash = redisTemplate.boundHashOps(key);
         hash.put(hashKey, value);
     }
 
@@ -118,8 +125,10 @@ public class RedisTemplateUtil {
      * @param hashKey
      * @return
      */
-    public static Object hmGet(RedisTemplate redisTemplate, String key, Object hashKey) {
-        BoundHashOperations<String, Object, Object> hash = redisTemplate.boundHashOps(key);
+    public static <HK, HV> HV hmGet(RedisTemplate redisTemplate,
+                                    String key,
+                                    HK hashKey) {
+        BoundHashOperations<String, HK, HV> hash = redisTemplate.boundHashOps(key);
         return hash.get(hashKey);
     }
 
@@ -127,11 +136,62 @@ public class RedisTemplateUtil {
      * 列表添加
      *
      * @param key
-     * @param value
+     * @param dataValue
      */
-    public static void lPush(RedisTemplate redisTemplate, String key, Object value) {
-        BoundListOperations<String, Object> list = redisTemplate.boundListOps(key);
-        list.rightPush(value);
+    public static <T> void addListData(RedisTemplate redisTemplate,
+                                       String key,
+                                       T dataValue) {
+        addListData(redisTemplate, key, dataValue, null);
+    }
+
+    /**
+     * 列表添加
+     *
+     * @param key
+     * @param dataValues
+     */
+    public static <T> void addListData(RedisTemplate redisTemplate,
+                                       String key,
+                                       List<T> dataValues) {
+        addListData(redisTemplate, key, dataValues, null);
+    }
+
+    /**
+     * 列表添加
+     *
+     * @param key
+     * @param dataValue
+     * @param expireTime 有效时间(秒)
+     */
+    public static <T> void addListData(RedisTemplate redisTemplate,
+                                       String key,
+                                       T dataValue,
+                                       Long expireTime) {
+        BoundListOperations<String, T> list = redisTemplate.boundListOps(key);
+        list.rightPush(dataValue);
+        if (null != expireTime) {
+            redisTemplate.expire(key, expireTime, TimeUnit.SECONDS);
+        }
+    }
+
+    /**
+     * 列表添加
+     *
+     * @param key
+     * @param dataValues
+     * @param expireTime 有效时间(秒)
+     */
+    public static <T> void addListData(RedisTemplate redisTemplate,
+                                       String key,
+                                       List<T> dataValues,
+                                       Long expireTime) {
+        BoundListOperations<String, T> list = redisTemplate.boundListOps(key);
+        for (T dataValue : dataValues) {
+            list.rightPush(dataValue);
+        }
+        if (null != expireTime) {
+            redisTemplate.expire(key, expireTime, TimeUnit.SECONDS);
+        }
     }
 
     /**
@@ -142,8 +202,11 @@ public class RedisTemplateUtil {
      * @param end
      * @return
      */
-    public static List<Object> lRange(RedisTemplate redisTemplate, String key, long start, long end) {
-        BoundListOperations<String, Object> list = redisTemplate.boundListOps(key);
+    public static <T> List<T> getListData(RedisTemplate redisTemplate,
+                                          String key,
+                                          long start,
+                                          long end) {
+        BoundListOperations<String, T> list = redisTemplate.boundListOps(key);
         return list.range(start, end);
     }
 
@@ -151,12 +214,62 @@ public class RedisTemplateUtil {
      * 集合添加
      *
      * @param key
-     * @param value
+     * @param dataValue
      */
-    public static Long add(RedisTemplate redisTemplate, String key, Object value) {
-        BoundSetOperations<String, Object> set = redisTemplate.boundSetOps(key);
-        Long flag = set.add(value);
-        return flag;
+    public static <T> void addSetData(RedisTemplate redisTemplate,
+                                      String key,
+                                      T dataValue) {
+        addSetData(redisTemplate, key, dataValue, null);
+    }
+
+    /**
+     * 集合添加
+     *
+     * @param key
+     * @param dataValues
+     */
+    public static <T> void addSetData(RedisTemplate redisTemplate,
+                                      String key,
+                                      Collection<T> dataValues) {
+        addSetData(redisTemplate, key, dataValues, null);
+    }
+
+    /**
+     * 集合添加
+     *
+     * @param key
+     * @param dataValue
+     * @param expireTime 有效时间(秒)
+     */
+    public static <T> void addSetData(RedisTemplate redisTemplate,
+                                      String key,
+                                      T dataValue,
+                                      Long expireTime) {
+        BoundSetOperations<String, T> set = redisTemplate.boundSetOps(key);
+        set.add(dataValue);
+        if (null != expireTime) {
+            redisTemplate.expire(key, expireTime, TimeUnit.SECONDS);
+        }
+    }
+
+    /**
+     * 集合添加
+     *
+     * @param key
+     * @param dataValues
+     * @param expireTime 有效时间(秒)
+     */
+    public static <T> void addSetData(RedisTemplate redisTemplate,
+                                      String key,
+                                      Collection<T> dataValues,
+                                      Long expireTime) {
+        BoundSetOperations<String, T> set = redisTemplate.boundSetOps(key);
+        for (T dataValue : dataValues) {
+            set.add(dataValue);
+        }
+        if (null != expireTime) {
+            redisTemplate.expire(key, expireTime, TimeUnit.SECONDS);
+        }
     }
 
     /**
@@ -165,9 +278,50 @@ public class RedisTemplateUtil {
      * @param key
      * @return
      */
-    public static Set<Object> setMembers(RedisTemplate redisTemplate, String key) {
-        BoundSetOperations<String, Object> set = redisTemplate.boundSetOps(key);
+    public static <T> Set<T> getSetData(RedisTemplate redisTemplate, String key) {
+        BoundSetOperations<String, T> set = redisTemplate.boundSetOps(key);
         return set.members();
+    }
+
+    /**
+     * 删除集合数据
+     *
+     * @param key
+     * @param dataValue
+     * @param <T>
+     * @return
+     */
+    public static <T> Long removeSetData(RedisTemplate redisTemplate, String key, T dataValue) {
+        BoundSetOperations<String, T> set = redisTemplate.boundSetOps(key);
+        return set.remove(dataValue);
+    }
+
+    /**
+     * 删除集合数据
+     *
+     * @param key
+     * @param dataValue
+     * @param <T>
+     * @return
+     */
+    public static <T> Long removeSetData(RedisTemplate redisTemplate, String key, Collection<T> dataValue) {
+        BoundSetOperations<String, T> set = redisTemplate.boundSetOps(key);
+        return set.remove(dataValue);
+    }
+
+    /**
+     * 校验集合数据
+     *
+     * @param key
+     * @param dataValue
+     * @param <T>
+     * @return
+     */
+    public static <T> Boolean checkSetData(RedisTemplate redisTemplate,
+                                           String key,
+                                           T dataValue) {
+        BoundSetOperations<String, T> set = redisTemplate.boundSetOps(key);
+        return set.isMember(dataValue);
     }
 
     /**
@@ -175,11 +329,30 @@ public class RedisTemplateUtil {
      *
      * @param key
      * @param value
-     * @param scoure
+     * @param score
      */
-    public static Boolean zAdd(RedisTemplate redisTemplate, String key, Object value, double scoure) {
-        BoundZSetOperations<String, Object> zset = redisTemplate.boundZSetOps(key);
-        Boolean flag = zset.add(value, scoure);
+    public static <T> Boolean addZSetData(RedisTemplate redisTemplate, String key, T value, double score) {
+        return addZSetData(redisTemplate, key, value, score, null);
+    }
+
+    /**
+     * 有序集合添加
+     *
+     * @param key
+     * @param value
+     * @param score
+     * @param expireTime 有效时间(秒)
+     */
+    public static <T> Boolean addZSetData(RedisTemplate redisTemplate,
+                                          String key,
+                                          T value,
+                                          double score,
+                                          Long expireTime) {
+        BoundZSetOperations<String, T> zSet = redisTemplate.boundZSetOps(key);
+        Boolean flag = zSet.add(value, score);
+        if (null != expireTime) {
+            redisTemplate.expire(key, expireTime, TimeUnit.SECONDS);
+        }
         return flag;
     }
 
@@ -187,13 +360,43 @@ public class RedisTemplateUtil {
      * 有序集合获取
      *
      * @param key
-     * @param scoure
-     * @param scoure1
+     * @param minScore
+     * @param maxScore
      * @return
      */
-    public static Set<Object> rangeByScore(RedisTemplate redisTemplate, String key, double scoure, double scoure1) {
-        BoundZSetOperations<String, Object> zset = redisTemplate.boundZSetOps(key);
-        return zset.rangeByScore(scoure, scoure1);
+    public static <T> Set<T> getZSetDataByScore(RedisTemplate redisTemplate, String key, double minScore, double maxScore) {
+        BoundZSetOperations<String, T> zSet = redisTemplate.boundZSetOps(key);
+        Set<T> dataSet = zSet.rangeByScore(minScore, maxScore);
+        if (!CollectionUtils.isEmpty(dataSet)) {
+            zSet.removeRangeByScore(minScore, maxScore);
+        }
+        return dataSet;
+    }
+
+    /**
+     * 删除集合数据
+     *
+     * @param key
+     * @param dataValue
+     * @param <T>
+     * @return
+     */
+    public static <T> Long removeZSetData(RedisTemplate redisTemplate, String key, T dataValue) {
+        BoundZSetOperations<String, T> zSet = redisTemplate.boundZSetOps(key);
+        return zSet.remove(dataValue);
+    }
+
+    /**
+     * 删除集合数据
+     *
+     * @param key
+     * @param setData
+     * @param <T>
+     * @return
+     */
+    public static <T> Long removeZSetData(RedisTemplate redisTemplate, String key, Collection<T> setData) {
+        BoundZSetOperations<String, T> zSet = redisTemplate.boundZSetOps(key);
+        return zSet.remove(setData);
     }
 
     /**
