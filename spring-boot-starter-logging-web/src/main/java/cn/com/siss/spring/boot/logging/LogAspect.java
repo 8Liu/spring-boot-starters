@@ -9,6 +9,7 @@ import org.aspectj.lang.annotation.*;
 import org.slf4j.MDC;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.io.InputStreamSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -158,7 +159,7 @@ public class LogAspect {
                 } else {
                     // 判断参数对象类型是否为接口或基本类型
                     if (arg.getClass().isPrimitive() || arg instanceof ServletRequest
-                            || arg instanceof ServletResponse) {
+                            || arg instanceof ServletResponse || arg instanceof InputStreamSource) {
                         jsonString.append(arg.toString());
                     } else {
                         jsonString.append(JSONObject.toJSONString(arg));
